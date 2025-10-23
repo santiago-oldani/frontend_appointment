@@ -1,0 +1,16 @@
+/* src/index.css */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+li{
+    color: #346cc8;
+    font: medium;
+    font-size: 1.3rem;
+}
+
+body{
+    margin: 0;
+}
