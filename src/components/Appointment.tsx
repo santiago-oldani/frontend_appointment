@@ -6,6 +6,7 @@ interface SelectDiv {
     title: string;
     desc: string;
     entity: string;
+    state: string;
 }
 
 interface Specialty {
@@ -34,9 +35,9 @@ interface Patient {
 }
 
 const arrayDivs: SelectDiv[] = [
-    { title: "Seleccione la especialidad", desc: "Haz click aqui para elegir una especialidad", entity: "Especialidades" },
-    { title: "Seleccione el profesional", desc: "Haz click aqui para elegir un profesional", entity: "Profesionales" },
-    { title: "Seleccione la fecha y hora", desc: "Haz click aqui para elegir una fecha y hora", entity: "Fecha y hora" }
+    { title: "Seleccione la especialidad", desc: "Haz click aqui para elegir una especialidad", entity: "Especialidades", state: "next" },
+    { title: "Seleccione el profesional", desc: "Haz click aqui para elegir un profesional", entity: "Profesionales", state: "blocked" },
+    { title: "Seleccione la fecha y hora", desc: "Haz click aqui para elegir una fecha y hora", entity: "Fecha y hora", state: "blocked" }
 ]
 
 const Appointment: React.FC = () => {
@@ -65,26 +66,30 @@ const Appointment: React.FC = () => {
     }
 
     function showEntityByIndex(index: number): void {
-        switch (index) {
-            case 0:
-                setCurrentView("Especialidades")
-                setOptionsVisible(true);
-                showSpecialties();
-                break;
-            case 1:
-                setCurrentView("Profesionales");
-                setOptionsVisible(true);
-                break;
+        if (arrayDivs[index].state !== "blocked") {
+            switch (index) {
+                case 0:
+                    setCurrentView("Especialidades")
+                    setOptionsVisible(true);
+                    showSpecialties();
+                    break;
+                case 1:
+                    setCurrentView("Profesionales");
+                    setOptionsVisible(true);
+                    break;
 
-            case 2:
-                setCurrentView("Fecha y hora");
-                setOptionsVisible(true);
-                break;
+                case 2:
+                    setCurrentView("Fecha y hora");
+                    setOptionsVisible(true);
+                    break;
 
-            default:
-                break;
+                default:
+                    break;
+            }
         }
     }
+
+    console.log(assignedAppointment)
 
     function selectSpecialty(specialtyId: number): void {
         setOptionsVisible(false);
@@ -93,6 +98,10 @@ const Appointment: React.FC = () => {
             .then((res) => res.json())
             .then((data) => setProfessionals(data))
             .catch((error) => console.error("Error al obtener los profesionales: ", error))
+
+        arrayDivs[0].state = "selected";
+        arrayDivs[1].state = "next";
+        arrayDivs[2].state = "blocked";
     }
 
     function selectProfessional(professionalId: number): void {
@@ -101,6 +110,12 @@ const Appointment: React.FC = () => {
         fetch(`http://localhost:8081/api/appointments/available/${professionalId}`)
             .then((res) => res.json())
             .then((data) => setAvailableAppointments(data))
+            .catch((error) => console.error(error))
+
+        arrayDivs[1].state = "selected";
+        arrayDivs[2].state = "next";
+
+        console.log(availableAppointments);
     }
 
     function selectAppointment(appointmentId: number): void {
@@ -123,6 +138,9 @@ const Appointment: React.FC = () => {
 
             setCurrentView("Turno confirmado");
             setActualDiv(0);
+            arrayDivs[0].state = "next";
+            arrayDivs[1].state = "blocked";
+            arrayDivs[2].state = "blocked";
         }
     }
 
@@ -146,9 +164,9 @@ const Appointment: React.FC = () => {
     }
 
     function prevWindow(): void {
-        if(currentView === "Tu turno"){
+        if (currentView === "Tu turno") {
             setCurrentView("Fecha y hora");
-        }else{
+        } else {
             setOptionsVisible(false);
         }
     }
@@ -171,11 +189,22 @@ const Appointment: React.FC = () => {
 
     function getNextAppointments(patientId: number): void {
         fetch(`http://localhost:8081/api/appointments/reserved/${patientId}`)
-            .then((res) => res.json()
-                .then((data) => setNextAppointmentsOfPatient(data)))
+            .then((res) => res.json())
+            .then((data) => setNextAppointmentsOfPatient(data))
             .catch((error) => console.error("Ocurrio un error al obtener sus proximos turnos: ", error))
 
         setShowNextAppointments(true);
+    }
+
+    function cancelAppointment(appointmentId: number, patientId: number): void {
+        fetch(`http://localhost:8081/api/appointments/cancel/${appointmentId}`,{
+            method: "PATCH"
+        })
+            .then((res) => {
+                if (!res.ok) throw new Error(`Error HTTP ${res.status}`);
+                getNextAppointments(patientId);
+            })
+            .catch((error) => console.error("Error al cancelar el turno", error));
     }
 
     return (
@@ -210,7 +239,7 @@ const Appointment: React.FC = () => {
                                 return (
                                     <div className="flex flex-col justify-center items-center mt-[20px] border border-solid border-[#12caff] rounded-[12px] p-[20px]">
                                         <div className="flex flex-row justify-start items-start gap-[10px]">
-                                            <p className="m-[0px]">Fecha:</p>
+                                            <h3 className="m-[0px] font-semibold">Fecha:</h3>
                                             <div className="flex flex-col items-center justify-center">
                                                 <p className="m-[0px] capitalize">
                                                     {formatDate(appointment).fecha}
@@ -222,7 +251,7 @@ const Appointment: React.FC = () => {
                                         </div>
 
                                         <div className="flex flex-row justify-center items-center gap-[10px]">
-                                            <p>Profesional:</p>
+                                            <h3>Profesional:</h3>
                                             <p className="m-[0px]">
                                                 {appointment.professional.name}{" "}
                                                 {appointment.professional.lastname}
@@ -230,9 +259,14 @@ const Appointment: React.FC = () => {
                                         </div>
 
                                         <div className="flex flex-row justify-center items-center gap-[10px]">
-                                            <p>Especialidad:</p>
+                                            <h3>Especialidad:</h3>
                                             <p>{appointment.professional.specialty.name}</p>
                                         </div>
+
+                                        <div onClick={() => cancelAppointment(appointment.id, patient.id)} className="flex cursor-pointer justify-center items-center px-[20px] py-[10px] border-1 border-solid border-[#b80900] rounded-[8px]">
+                                            <span className="text-[#b80900]">Cancelar turno</span>
+                                        </div>
+
                                     </div>
                                 )
                             })}
@@ -345,30 +379,40 @@ const Appointment: React.FC = () => {
                                     className="flex flex-col items-center justify-center gap-[40px]"
                                 >
                                     <div
-                                        className={`flex items-center justify-center p-[10px] ${actualDiv === index ? "bg-[#346cc8]" : "bg-[#585a5b]"
-                                            } w-[40px] h-[40px] rounded-full`}
+                                        className={`flex items-center justify-center p-[10px] 
+                                            ${arrayDivs[index].state === "selected" && "bg-[#0da60a]"}
+                                            ${arrayDivs[index].state === "next" && "bg-[#346cc8]"}
+                                            ${arrayDivs[index].state === "blocked" && "bg-[#585a5b]"} 
+                                                w-[40px] h-[40px] rounded-full`}
                                     >
-                                        <span className="text-[40px] text-[#fff] m-[0px]">
+
+                                        {arrayDivs[index].state === "selected" ? <FaRegCheckCircle color="white" size={20} /> : <span className="text-[40px] text-[#fff] m-[0px]">
                                             {index + 1}
-                                        </span>
+                                        </span>}
+
                                     </div>
 
                                     <div
                                         onClick={() => showEntityByIndex(index)}
-                                        className={`flex flex-col items-center ${actualDiv === index
-                                            ? "w-[350px] h-[200px] border-[#12caff] cursor-pointer border-2 shadow-xl"
-                                            : "w-[300px] h-[150px] border-[#2d2f31] opacity-[0.7] cursor-not-allowed border"
-                                            } justify-around border-solid rounded-[18px] p-[20px] text-center`}
+                                        className={`flex flex-col items-center w-[300px] h-[150px] border
+                                            ${arrayDivs[index].state === "next" && "w-[350px] h-[200px] border-[#12caff] cursor-pointer border-2 shadow-xl"}
+                                            ${arrayDivs[index].state === "blocked" && "border-[#2d2f31] opacity-[0.7] cursor-not-allowed"}
+                                            ${arrayDivs[index].state === "selected" && "border-[#0da60a] border-2 cursor-pointer"}
+                                            justify-around border-solid rounded-[18px] p-[20px] text-center`}
                                     >
                                         <h2
-                                            className={`m-[0px] ${actualDiv === index ? "text-[#12caff] text-[30px]" : "text-[#585a5b] text-[26px]"
-                                                }`}
+                                            className={`m-[0px] text-[26px]
+                                                ${arrayDivs[index].state === "next" && "text-[#12caff] text-[30px]"}
+                                                ${arrayDivs[index].state === "blocked" && "text-[#585a5b]"}
+                                                ${arrayDivs[index].state === "selected" && "text-[#0da60a]"}`}
                                         >
                                             {div.title}
                                         </h2>
                                         <p
-                                            className={`m-[0px] ${actualDiv === index ? "text-[#346cc8] text-[36px]" : "text-[#585a5b] text-[32px]"
-                                                }`}
+                                            className={`m-[0px] text-[32px]
+                                                ${arrayDivs[index].state === "next" && "text-[#346cc8] text-[36px]"}
+                                                ${arrayDivs[index].state === "blocked" && "text-[#585a5b]"}
+                                                ${arrayDivs[index].state === "selected" && "text-[#0da60a]"}`}
                                         >
                                             {div.desc}
                                         </p>
