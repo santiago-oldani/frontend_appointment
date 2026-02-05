@@ -21,10 +21,10 @@ const NavBar = () => {
       <div className="flex flex-row relative items-center w-full justify-center bg-[#fff] h-[65px]">
         <Link to={'/'}><img src={logo} alt="" className="w-[200px] absolute top-[22%] left-[4%] h-auto"/></Link>
         <ul className="list-none flex flex-row items-center justify-center gap-[50px]">
-          <Link to={'/appointments'}><li>Turnos</li></Link>
-          <li id="li_azul">Nosotros</li>
-          <li id="li_azul">Coberturas</li>
-          <li id="li_azul">Sedes</li>
+          <Link to={'/appointments'}><li id="li_azul">Turnos</li></Link>
+          <a href="#quienes_somos"><li id="li_azul">Quienes Somos</li></a>
+          <a href="#coberturas"><li id="li_azul">Coberturas</li></a>
+          <a href="#sedes"><li id="li_azul">Sedes</li></a>
         </ul>
       </div>
 

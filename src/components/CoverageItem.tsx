@@ -19,6 +19,7 @@ const CoverageItem = ({ cov, itemId, dropDowns, setDropDowns }:
 
     const isOpen = dropDowns.includes(itemId);
 
+
     return (
 
         <div className="flex flex-col items-start justify-start">
@@ -33,7 +34,7 @@ const CoverageItem = ({ cov, itemId, dropDowns, setDropDowns }:
                 {isOpen && <motion.div
                     key={itemId}
                     initial={{ height: 0 }}
-                    whileInView={{ height: "auto" }}
+                    animate={{ height: "auto" }}
                     transition={{ duration: 0.3, ease: "easeInOut" }}
                     exit={{ height: 0 }}
                     className={`mt-2 pl-4 overflow-hidden`}>

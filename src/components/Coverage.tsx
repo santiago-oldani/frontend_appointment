@@ -1,5 +1,6 @@
 import { useState } from "react";
 import CoverageItem from "./CoverageItem";
+import { FaRegCheckCircle } from "react-icons/fa";
 
 interface Coverages {
     title: string;
@@ -97,7 +98,7 @@ const coveragesList: Coverages[] = [
     },
     {
         title: "OSPE | Obra Social de Petroleros",
-        plans: ["OSPe-704 E", "OSPe A 600", "OSPe A606" ,"OSPe A 608", "OSPe A 700", "OSPe A 704", "OSPe-D 500", "OSPe D 750", "OSPe D 756" ,"OSPe 704 SC", "Credencial Gris"]
+        plans: ["OSPe-704 E", "OSPe A 600", "OSPe A606", "OSPe A 608", "OSPe A 700", "OSPe A 704", "OSPe-D 500", "OSPe D 750", "OSPe D 756", "OSPe 704 SC", "Credencial Gris"]
     },
     {
         title: "MedOSPJN | Obra Social del Poder Judicial de la Naciónicus",
@@ -141,7 +142,7 @@ const coveragesList: Coverages[] = [
     },
 ]
 
-coveragesList.sort((a,b) => a.title.localeCompare(b.title));
+coveragesList.sort((a, b) => a.title.localeCompare(b.title));
 
 // Antes de tu componente React:
 const mitad = Math.ceil(coveragesList.length / 2);
@@ -152,23 +153,32 @@ const Coverage: React.FC = () => {
     const [dropDowns, setDropDowns] = useState<number[]>([]);
 
     return (
-        <section className="bg-[#f1f0f0] h-auto w-full flex flex-col items-center justify-center">
+        <section id="coberturas" className="bg-[#f1f0f0] h-auto w-full flex flex-col items-center justify-center">
             <div className="flex relative items-center justify-center py-[10px] w-full h-[40px] bg-[#0047ba]">
-                <h1 className="text-[#fff] absolute left-[16%] text-[1.8rem]">Coberturas</h1>
+                <h1 className="text-[#fff] text-[1.8rem]">Coberturas</h1>
             </div>
-            <div className="flex items-center justify-center bg-[#fff] h-fit py-[40px] w-full">
-                <div className="flex flex-col items-center justify-center gap-[30px] w-[70%]">
+            <div className="flex items-center justify-center bg-[#fff] h-fit py-[40px] shadow-[0_20px_50px_rgba(0,0,0,0.2)] rounded-[32px] mt-[40px] w-[60%]">
+                <div className="flex flex-col items-center justify-center gap-[20px] w-[90%]">
                     <div className="border-l-3 border-l-solid border-l-[#000] py-[10px] px-[20px]">
                         <h2 className="text-[#0047ba] mt-[0px] font-[600]">Nuestras Coberturas</h2>
-                        <h3 className="text-[#0094ce] mt-[0px] mb-[0px] font-[500]">Como plataforma líder en gestión de turnos y teleconsultas, nuestro compromiso es establecer alianzas estratégicas con una amplia red de Obras Sociales y Prepagas de alcance nacional.</h3>
+                        <h3 className="text-[#0094ce] mt-[0px] mb-[0px] font-[500]">Como plataforma líder en gestión de turnos y teleconsultas, nuestro compromiso es establecer alianzas estratégicas con una amplia red de Obras Sociales y Prepagas de alcance nacional. Con nosotros usted podrá: </h3>
                     </div>
-                    <h2 className="mb-[0px]">Estamos orientados a simplificar al máximo el proceso de gestión. Al utilizar nuestra plataforma, usted podrá: </h2>
-                    <ul className="m-[0px]">
-                        <li id="li_azul" className="mb-[20px]">Consultar la cobertura de sus planes específicos para cada especialidad y servicio disponible.</li>
-                        <li id="li_azul" className="mb-[20px]">Visualizar la cartilla de prestadores que aceptan su plan en tiempo real.</li>
-                        <li id="li_azul">Obtener turnos para consultas presenciales y teleconsultas con la validación de su credencial al instante.</li>
+                    
+                    <ul className="m-[0px] w-full flex flex-col items-start justify-start">
+                        <div className="flex items-center gap-[10px] justify-center mb-[20px]">
+                            <FaRegCheckCircle className="flex-shrink-0" size={30} color="#346cc8"/>
+                            <li className="list-none text-[#02162c] text-[1.2rem]">Consultar la cobertura de sus planes específicos para cada especialidad y servicio disponible.</li>
+                        </div>
+                        <div className="flex items-center gap-[10px] justify-center mb-[20px]">
+                            <FaRegCheckCircle className="flex-shrink-0" size={30} color="#346cc8"/>
+                            <li className="list-none text-[#02162c] text-[1.2rem]">Visualizar la cartilla de prestadores que aceptan su plan en tiempo real.</li>
+                        </div>
+                        <div className="flex items-center gap-[10px] justify-center mb-[20px]">
+                            <FaRegCheckCircle className="flex-shrink-0" size={30} color="#346cc8"/>
+                            <li className="list-none text-[#02162c] text-[1.2rem]">Obtener turnos para consultas presenciales y teleconsultas con la validación de su credencial al instante.</li>
+                        </div>
                     </ul>
-                    <p className=" text-[#0094ce] font-medium text-[1.2rem] w-[85%]">Mantenemos nuestros convenios y listados de profesionales en permanente actualización para garantizar que la información sobre su cobertura sea siempre precisa, facilitando un acceso rápido, seguro y sin fricciones a la atención médica que usted necesita.</p>
+                    <p className=" text-[#475569] font-medium text-[1.2rem] w-[85%]">Mantenemos nuestros convenios y listados de profesionales en permanente actualización para garantizar que la información sobre su cobertura sea siempre precisa.</p>
                 </div>
             </div>
 
@@ -184,7 +194,7 @@ const Coverage: React.FC = () => {
                 <div className="flex flex-col gap-4">
                     {columnaDerecha.map((cov, index) => {
                         return (
-                            <CoverageItem cov={cov} itemId={index + 10} dropDowns={dropDowns} setDropDowns={setDropDowns} />
+                            <CoverageItem cov={cov} itemId={index + 100} dropDowns={dropDowns} setDropDowns={setDropDowns} />
                         )
                     })}
                 </div>

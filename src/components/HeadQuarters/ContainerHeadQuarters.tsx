@@ -1,3 +1,5 @@
+import { FaMapMarkerAlt } from "react-icons/fa";
+import { IoMdTime } from "react-icons/io";
 
 interface Sedes {
     location: string;
@@ -15,32 +17,55 @@ interface SedesProps {
 }
 
 const ContainerHeadQuarters: React.FC<SedesProps> = ({ sede }) => {
-    console.log(sede);
+    let arrayColectivosSedes = sede.colectivo.split(',');
+
     return (
         <>
-            <div className="flex items-start w-full gap-[30px] justify-center">
-                <div className="flex flex-col w-[21%] py-[20px] px-[20px] h-fit items-start justify-start bg-[#f1f0f0]">
-                    <h1 className="self-left text-[#0047ba] mt-[0px]">Sede {sede.location}</h1>
-                    <img src={sede.img_url} alt="" className="w-[400px] h-auto rounded-bl-[40px]" />
-                    <h2 className="text-[#0047ba] border-l-3 pl-[10px] border-l-[#57c9e8]">{sede.address}</h2>
-                    <h3 className="text-[#57c9e8]">De lunes a viernes de 8 a 20 horas y sabados de 8 a 13 horas.</h3>
-                    <p className="text-[#0047ba] w-[400px]">{sede.description}</p>
+            <div className="flex items-start w-[40%] gap-[30px] justify-start">
+                <div className="flex flex-col w-[45%] py-[25px] px-[10px] h-auto items-center hover:scale-105 transition duration-400 justify-center bg-[#fff] rounded-[32px] shadow-[0_20px_50px_rgba(0,0,0,0.2)] ">
+                    <img src={sede.img_url} alt="" className="w-[250px] h-auto rounded-[40px]" />
+
+                    <div className="flex flex-col items-start w-[75%] mt-[30px] justify-center">
+                        <h1 className="self-left text-[#1e335f] mt-[0px]">Sede {sede.location}</h1>
+                        <div className="flex items-center justify-center gap-[10px]">
+                            <FaMapMarkerAlt size={20} color="#1e335f" className="flex-shrink-0" />
+                            <h2 className="text-[#1e335f] text-[1rem]">{sede.address}</h2>
+                        </div>
+                        <div className="flex items-center justify-center gap-[10px]">
+                            <IoMdTime size={20} color="#1e335f" className="flex-shrink-0" />
+                            <h3 className="text-[#1e335f] text-[1rem]">De lunes a viernes de 8 a 20 horas y sabados de 8 a 13 horas.</h3>
+                        </div>
+
+                        <div className="flex flex-col items-start w-full justify-center">
+                            <h3 className="text-[#1e335f]">¿Cómo llegar?</h3>
+                            <div className="flex items-center gap-[20px] justify-center">
+                                <div className={`flex items-center justify-center w-[30px] h-[30px] ${sede.subte === "D" ? "bg-[#27a353]" : sede.subte === "H" ? "bg-[#fed200]" : "bg-[#ef1428]" }  rounded-full p-[10px]`}>
+                                    <span className="text-[#fff] text-[2rem] font-bold">{sede.subte}</span>
+                                </div>
+                                <div className="flex items-center justify-center w-[80%] flex-wrap gap-[10px]">
+                                    {arrayColectivosSedes.map((colectivo) => {
+                                        return (
+                                            <div className="flex items-center justify-center bg-[#5d9ee8] px-[6px] py-[4px] rounded-[4px]">
+                                                <span className="text-[#fff]">{colectivo}</span>
+                                            </div>
+                                        )
+                                    })}
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
                 </div>
-                <div className="flex flex-col w-[40%] items-start justify-start">
+
+                <div className="flex flex-col w-[45%] bg-[#fff] p-[40px] rounded-[32px] shadow-[0_20px_50px_rgba(0,0,0,0.2)] items-center justify-center">
                     <iframe
                         src={sede.map_url}
-                        width="800"
-                        height="480"
                         loading="lazy"
                         referrerPolicy="no-referrer-when-downgrade"
-                        className="w-full"
+                        className="w-[400px] h-[567px]"
                     >
                     </iframe>
-                    <h3 className="text-[#7d868c]">¿Cómo llegar?</h3>
-                    <h4 className="text-[#7d868c]">En colectivo: </h4>
-                    <p className="text-[#7d868c]">{sede.colectivo}</p>
-                    <h4 className="text-[#7d868c]">En subte:</h4>
-                    <p className="text-[#7d868c]">{sede.subte}</p>
+
                 </div>
             </div>
         </>

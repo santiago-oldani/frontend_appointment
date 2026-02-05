@@ -4,16 +4,6 @@
 @tailwind components;
 @tailwind utilities;
 
-#banner {
-    background-image: url('/src/assets/imgs/imagen1.webp');
-    /* 1. Muestra la imagen entera, escalándola hasta que quepa por completo. */
-    background-size: contain;
-    /* 2. Evita que la imagen se repita si el área es más grande que la imagen. */
-    background-repeat: no-repeat;
-    /* 3. Centra la imagen en el contenedor. */
-    background-position: right;
-}
-
 #li_azul {
     color: #346cc8;
     font: medium;
@@ -23,7 +13,6 @@
 body {
     margin: 0;
     font-family: "Inter", sans-serif;
-    font-weight: 400;
 }
 
 a {
@@ -34,4 +23,8 @@ p {
     margin: 0;
     font-size: 1rem;
     color: #7d868c;
+}
+
+html {
+  scroll-behavior: smooth;
 }
