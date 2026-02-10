@@ -1,6 +1,7 @@
 // useAppointments.ts
 import { useState, useEffect } from 'react';
 import type { Specialty, Professional, Appointment, SelectDiv } from '../utils/models';
+import type { Dayjs } from 'dayjs';
 
 export const useAppointments = (patient: any) => {
     const [arrayDivs, setArrayDivs] = useState<SelectDiv[]>([
@@ -24,28 +25,16 @@ export const useAppointments = (patient: any) => {
             .catch((error) => console.error("Error al obtener las especialidades: ", error))
     }
 
-    function showEntityByIndex(index: number): void {
-        if (arrayDivs[index].state !== "blocked") {
-            switch (index) {
-                case 0:
-                    setCurrentView("Especialidades")
-                    showSpecialties();
-                    break;
-                case 1:
-                    setCurrentView("Profesionales");
-                    break;
-
-                case 2:
-                    setCurrentView("Fecha y hora");
-                    break;
-
-                default:
-                    break;
-            }
-        }
-    }
-
     function selectSpecialty(specialtyId: number): void {
+        const specialty = specialties.find((spec) => spec.id === specialtyId);
+
+        if (!specialty) {
+            console.error("No se encontró la especialidad con ID:", specialtyId);
+            return;
+        }
+
+        setAssignedAppointment(prev => ({ ...prev, specialty: specialty } as Appointment))
+
         fetch(`http://localhost:8081/api/professionals/by-specialtyId?specialtyId=${specialtyId}`)
             .then((res) => res.json())
             .then((data) => setProfessionals(data))
@@ -62,15 +51,41 @@ export const useAppointments = (patient: any) => {
     }
 
     function selectProfessional(professionalId: number): void {
+        const professional = professionals.find((prof) => prof.id === professionalId);
+
+        if (!professional) {
+            console.error("No se encontró al profesional con ID:", professionalId);
+            return;
+        }
+
+        setAssignedAppointment(prev => ({ ...prev, professional: professional } as Appointment))
+
         fetch(`http://localhost:8081/api/appointments/available/${professionalId}`)
             .then((res) => res.json())
             .then((data) => setAvailableAppointments(data))
             .catch((error) => console.error(error))
 
-        arrayDivs[1].state = "selected";
-        arrayDivs[2].state = "next";
-
+        setArrayDivs(prevArray =>
+            prevArray.map((item, index) => {
+                if (index === 0) return { ...item, state: "selected" };
+                if (index === 1) return { ...item, state: "selected" };
+                if (index === 2) return { ...item, state: "next" };
+                return item;
+            })
+        );
     }
+
+    function getAppointmentsAvailable(date: Dayjs): void {
+    const formattedDate = date.format('YYYY-MM-DD');
+
+    fetch(`http://localhost:8081/api/appointments/available?professionalId=${assignedAppointment?.professional.id}&date=${formattedDate}`)
+        .then((res) => {
+            if (!res.ok) throw new Error('Error en la respuesta del servidor');
+            return res.json();
+        })
+        .then((data) => setAvailableAppointments(data))
+        .catch((error) => console.error("Error en fetch:", error));
+}
 
     function selectAppointment(appointmentId: number): void {
         if (currentView === "Fecha y hora") {
@@ -138,6 +153,27 @@ export const useAppointments = (patient: any) => {
             .catch((error) => console.error("Error al cancelar el turno", error));
     }
 
+    function showEntityByIndex(index: number): void {
+        if (arrayDivs[index].state !== "blocked") {
+            switch (index) {
+                case 0:
+                    setCurrentView("Especialidades")
+                    showSpecialties();
+                    break;
+                case 1:
+                    setCurrentView("Profesionales");
+                    break;
+
+                case 2:
+                    setCurrentView("Fecha y hora");
+                    break;
+
+                default:
+                    break;
+            }
+        }
+    }
+
     return {
         states: {
             specialties, professionals, arrayDivs,
@@ -145,10 +181,10 @@ export const useAppointments = (patient: any) => {
             secondsToRedirect, nextAppointmentsOfPatient, showNextAppointments
         },
         actions: {
-            showSpecialties, showEntityByIndex, selectSpecialty,
+            showSpecialties, showEntityByIndex, selectSpecialty, getAppointmentsAvailable,
             selectProfessional, selectAppointment, confirmAppointment,
             prevWindow, getNextAppointments, cancelAppointment,
-            setCurrentView, setShowNextAppointments, setSpecialties
+            setCurrentView, setShowNextAppointments, setSpecialties,
         }
     };
 };

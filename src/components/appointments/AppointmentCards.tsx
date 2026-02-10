@@ -21,7 +21,7 @@ const AppointmentCards: React.FC<AppointmentCardsProps> = ({ data, index }) => {
     const borderColor = stateColors[data.state];
 
     return (
-        <div className={`flex flex-col p-[20px] h-[590px] items-start shadow-[0_20px_50px_rgba(0,0,0,0.1)] max-w-[310px] p-8 bg-[#eeeff1] rounded-[32px] shadow-2xl transition-all duration-500 border-[6px] ${borderColor}`}>
+        <div className={`flex flex-col p-[20px] h-[670px] items-start shadow-[0_20px_50px_rgba(0,0,0,0.1)] w-[400px] p-8 bg-[#eeeff1] rounded-[32px] shadow-2xl transition-all duration-500 border-[6px] ${borderColor}`}>
             {/* Círculo con el número del paso */}
             <div className={`flex items-center justify-center w-[50px] h-[50px] flex-shrink-0 mb-6 rounded-full ${borderColor} border-[8px] bg-transparent`}>
                 <span
@@ -45,9 +45,9 @@ const AppointmentCards: React.FC<AppointmentCardsProps> = ({ data, index }) => {
             {/* SECCION DE ESPECIALIDAD */}
             {data.title === "Especialidad" && <SectionSpecialty data={data}/>}
 
-            {data.title === "Profesional" && <SectionProfessional />}
+            {data.title === "Profesional" && <SectionProfessional data={data}/>}
 
-            {data.title === "Fecha y Hora" && <SectionDate />}
+            {data.title === "Fecha y Hora" && <SectionDate data={data}/>}
         </div>
     );
 };

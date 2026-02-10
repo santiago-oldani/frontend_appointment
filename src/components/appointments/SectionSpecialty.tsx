@@ -5,13 +5,11 @@ import { useEffect, useState, type ChangeEvent, type JSX } from "react";
 import { MdGrain } from "react-icons/md";
 import { GiLungs } from "react-icons/gi";
 import { useAppointmentContext } from "../../context/AppointmentContext";
-import { FaCheck } from "react-icons/fa";
+import SectionSelected from "./SectionSelected";
 
 interface AppointmentData {
     data: SelectDiv;
 }
-
-
 
 const SectionSpecialty: React.FC<AppointmentData> = ({ data }) => {
     const { states, actions } = useAppointmentContext();
@@ -65,7 +63,7 @@ const SectionSpecialty: React.FC<AppointmentData> = ({ data }) => {
         <>
             {data.state === "next" ?
 
-                <div className="flex flex-col items-center justify-center gap-[10px]">
+                <div className="flex flex-col items-center self-center my-auto justify-center gap-[10px]">
 
                     <div className="flex items-center justify-center bg-[#fff] rounded-[12px] p-[8px] w-full shadow-[0_20px_50px_rgba(0,0,0,0.1)] mb-[35px]">
                         <input
@@ -100,25 +98,7 @@ const SectionSpecialty: React.FC<AppointmentData> = ({ data }) => {
                 </div> :
 
                 /* Lo que se muestra cuando ya seleccionaste una especialidad */
-                <div className="flex flex-col items-center justify-around w-full h-full ">
-                    
-                    <div className="h-[20px]"></div>
-
-                    <div className="bg-[#fff] flex items-center justify-center shadow-[0_20px_50px_rgba(0,0,0,0.1)] rounded-[14px] p-[20px] border-[2px] border-[#168027]">
-                        <div className="flex items-center justify-center w-[35px] h-[35px] p-[10px] bg-[#168027] rounded-[8px] mr-[14px]">
-                            <div className={data.state === "selected" ? "scale-[1.5]" : "scale-100"}>
-                                {specialtySelected?.icono}
-                            </div>
-                        </div>
-                        <span style={{ color: "#1a1d46", fontWeight: "bold", fontSize: "1.4rem", marginRight: "25px" }}>{specialtySelected?.name}</span>
-                        <span className="text-[#0567e8] cursor-pointer underline">Cambiar</span>
-                    </div>
-
-
-                    <div className="flex items-center justify-center w-[50px] h-[50px] p-[10px] rounded-full bg-[#168027]">
-                        <FaCheck color="#fff" size={40} />
-                    </div>
-                </div>
+                <SectionSelected data={data} specialtySelected={specialtySelected}/>
 
             }
 

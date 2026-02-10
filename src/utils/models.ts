@@ -17,6 +17,8 @@ export interface Professional {
     id: number;
     name: string;
     lastname: string;
+    headQuarters: string;
+    ratingValue: number;
     specialty: Specialty;
 }
 

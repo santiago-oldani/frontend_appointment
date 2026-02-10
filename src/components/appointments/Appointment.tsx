@@ -25,7 +25,7 @@ const AppointmentLayout: React.FC = () => {
     const { setShowNextAppointments, getNextAppointments } = actions;
 
     return (
-        <div className="flex flex-col items-center justify-start min-h-screen w-[100%] py-20 bg-[linear-gradient(180deg,_#e2e8f0_0%,_#f8fafc_35%,_#ffffff_100%)]  justify-center w-full">
+        <div className="flex flex-col items-center justify-start min-h-screen w-[100%] pb-[150px] bg-[linear-gradient(180deg,_#e2e8f0_0%,_#f8fafc_35%,_#ffffff_100%)]  justify-center w-full">
 
             {/* Contenedor principal */}
             <div className="flex flex-col items-center justify-center mt-[50px] w-[60%] ">
