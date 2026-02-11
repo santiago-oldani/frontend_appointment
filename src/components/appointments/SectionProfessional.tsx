@@ -13,7 +13,7 @@ interface AppointmentData {
 const SectionProfessional: React.FC<AppointmentData> = ({ data }) => {
     const { states, actions } = useAppointmentContext();
     const { professionals, assignedAppointment } = states;
-    const { selectProfessional } = actions;
+    const { selectProfessional, changeProfessional } = actions;
     const [selectedHeadQuarters, setSelectedHeadQuarters] = useState<Array<string>>(["Todas"]);
     const sedes = ["Todas", "Belgrano", "Recoleta", "Palermo", "Almagro"];
 
@@ -36,11 +36,6 @@ const SectionProfessional: React.FC<AppointmentData> = ({ data }) => {
         return selectedHeadQuarters.includes(prof.headQuarters);
     });
 
-    console.log(assignedAppointment, "turno asignado");
-
-    useEffect(() => {
-        console.log(selectedHeadQuarters);
-    }, [selectedHeadQuarters])
     return (
         <>
             {professionals.length === 0 ? (
@@ -75,12 +70,12 @@ const SectionProfessional: React.FC<AppointmentData> = ({ data }) => {
                         {profesionalesFiltrados.map((professional) => {
                             return (
                                 <div key={professional.id} className="flex items-center w-full gap-[12px] justify-start bg-[#fff] rounded-[14px] shadow-[0_20px_50px_rgba(0,0,0,0.1)] py-[16px] px-[10px]">
-                                    <div className="flex items-center justify-center w-[55px] h-[55px] p-[5px] rounded-full bg-[#a6cae6] flex-shrink-0">
-                                        <FaUserDoctor size={40} color="#fff" className="flex-shrink-0" />
+                                    <div className="flex items-center justify-center w-[50px] h-[50px] p-[5px] rounded-full bg-[#a6cae6] flex-shrink-0">
+                                        <FaUserDoctor size={35} color="#fff" className="flex-shrink-0" />
                                     </div>
                                     <div className="flex flex-col items-start justify-start">
-                                        <span style={{ fontWeight: "bold", color: "#000", whiteSpace: "nowrap" }}>Dr. {professional.name} {professional.lastname}</span>
-                                        <span style={{ color: "#919191", fontWeight: "400", marginBottom: "10px", fontSize: "0.9rem" }}>{professional.specialty.name}</span>
+                                        <span style={{ fontWeight: "bold", color: "#000", whiteSpace: "nowrap", fontSize: "0.9rem" }}>Dr. {professional.name} {professional.lastname}</span>
+                                        <span style={{ color: "#919191", fontWeight: "400", marginBottom: "10px", fontSize: "0.85rem" }}>{professional.specialty.name}</span>
                                         <Rating
                                             name="read-only"
                                             value={professional.ratingValue}
@@ -91,7 +86,7 @@ const SectionProfessional: React.FC<AppointmentData> = ({ data }) => {
                                     </div>
                                     <button
                                         onClick={() => selectProfessional(professional.id)}
-                                        className="ml-auto hover:opacity-[0.8] transition-all duration-300 flex cursor-pointer items-center w-[100px] justify-center bg-[#0047ba] text-[#fff] border-none rounded-[24px] self-end justify-self-end text-[1rem] px-[8px] py-[5px]">
+                                        className="ml-auto hover:opacity-[0.8] transition-all duration-300 flex cursor-pointer items-center w-[100px] justify-center bg-[#0047ba] text-[#fff] border-none rounded-[24px] self-end justify-self-end text-[0.9rem] px-[8px] py-[5px]">
                                         Seleccionar
                                     </button>
                                 </div>
@@ -101,7 +96,7 @@ const SectionProfessional: React.FC<AppointmentData> = ({ data }) => {
                 </div>
             ) : (
                 /* CASO 3: Ya se seleccionó un profesional */
-                <SectionSelected data={data} specialtySelected={assignedAppointment.professional}/>
+                <SectionSelected data={data} specialtySelected={assignedAppointment.professional} changeSpecialtyOrProfessional={changeProfessional} />
             )}
         </>
     )

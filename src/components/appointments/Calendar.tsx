@@ -4,30 +4,37 @@ import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
 import dayjs, { Dayjs } from 'dayjs';
 import { useEffect, useState } from 'react';
 import type { Appointment } from '../../utils/models';
+import ModalConfirmAppointment from '../modals/ModalConfirmAppointment';
+import { createPortal } from 'react-dom';
 dayjs.locale('es');
 
 interface getAppointmentsAvailable {
     data: Appointment[];
     getFunctionAppointments: Function;
+    confirmAppointment: Function;
+    selectAppointment: Function;
+    assignedAppointment: Appointment | undefined;
 }
 
-const hoursArray = ["08:30", "09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00"];
-
-const Calendar: React.FC<getAppointmentsAvailable> = ({ data, getFunctionAppointments }) => {
-    // Definimos el estado para la fecha seleccionada
-    // Inicializamos con null o con la fecha de hoy: dayjs()
+const Calendar: React.FC<getAppointmentsAvailable> = ({ data, getFunctionAppointments, confirmAppointment, selectAppointment, assignedAppointment }) => {
     const [selectedDate, setSelectedDate] = useState<Dayjs | null>(dayjs());
+    const [hourSelected, setHourSelected] = useState<number>();
+    const [modalConfirm, setModalConfirm] = useState<boolean>(false);
 
-    // Esta es la función que faltaba:
     const handleDateChange = (nuevaFecha: Dayjs | null) => {
         setSelectedDate(nuevaFecha);
 
         if (nuevaFecha) {
-            // Aquí podrías disparar el fetch a tu backend de Spring Boot
-            // para traer los horarios disponibles de ese día específico.
             console.log("Fecha elegida para el turno:", nuevaFecha.format('YYYY-MM-DD'));
         }
     };
+
+    useEffect(() => {
+        if (data && data.length > 0) {
+            const sortedData = [...data].sort((a, b) => a.date.localeCompare(b.date));
+            setHourSelected(sortedData[0].id);
+        }
+    }, [data]);
 
     useEffect(() => {
         getFunctionAppointments(selectedDate);
@@ -42,61 +49,109 @@ const Calendar: React.FC<getAppointmentsAvailable> = ({ data, getFunctionAppoint
                         value={selectedDate}
                         views={['day']}
                         disablePast
-
                         onChange={handleDateChange}
-                        maxDate={dayjs().add(2, 'month')}
+                        maxDate={dayjs().add(45, 'days')}
                         sx={{
-                            // 1. Agrandamos el contenedor general
-                            width: "350px",
-                            height: '300px',
-                            maxHeight: 'none',
+                            width: "300px",
+                            height: '315px',
+                            overflow: "hidden",
+                            margin: "0 auto",
 
-                            // 2. Agrandamos los números de los días
-                            '& .MuiPickersDay-root': {
-                                fontSize: '1rem', // Tamaño de los números
-                                width: '40px',      // Ancho del círculo de selección
-                                height: '40px',     // Alto del círculo
-                            },
-
-                            // 3. Agrandamos las letras de los días (L, M, M, J...)
-
-                            '& .MuiDayCalendar-weekDayLabel': {
-                                fontSize: '1rem',
-                                fontWeight: 'bold',
-                                marginRight: '6px',
-                                color: '#282e3d', // El color de tu proyecto
-                            },
-
-                            // 4. Agrandamos el tamaño del nombre del mes y el año
+                            // 1. Nombre del MES y AÑO (Más grandes)
                             '& .MuiPickersCalendarHeader-label': {
-                                fontSize: '1.2rem',
-                                fontWeight: 'bold',
+                                fontSize: '1.2rem', // Subimos de 1rem a 1.2rem
+                                fontWeight: '700',
                                 color: '#0047ba'
                             },
 
-                            // Opcional: Centrar el contenido
+                            // 2. Letras de los días: L, M, M, J... (Más grandes)
+                            '& .MuiDayCalendar-weekDayLabel': {
+                                fontSize: '1rem', // Subimos a 1rem (tamaño estándar de lectura)
+                                fontWeight: '600',
+                                width: '40px',    // Aumentamos el área para que no se pisen
+                                color: '#282e3d',
+                            },
+
+                            // 3. Números de los días (Más grandes y legibles)
+                            '& .MuiPickersDay-root': {
+                                fontSize: '1rem', // Antes era 0.85rem
+                                width: '40px',
+                                height: '40px',
+                                fontWeight: '500',
+                                // Efecto al seleccionar
+                                '&.Mui-selected': {
+                                    backgroundColor: '#0047ba !important',
+                                }
+                            },
+
+                            // 4. Ajustes de espaciado interno para que los 40px entren en los 300px
                             '& .MuiDayCalendar-monthContainer': {
                                 width: '100%',
+                            },
+
+                            '& .MuiDayCalendar-weekContainer': {
+                                margin: '2px 0',
+                                display: 'flex',
+                                justifyContent: 'center',
+                                // Reducimos el espacio entre días para que entren los números grandes
+                                gap: '2px',
+                            },
+
+                            // Centrado de la cabecera de días
+                            '& .MuiDayCalendar-header': {
+                                display: 'flex',
+                                justifyContent: 'center',
+                                gap: '2px',
+                            },
+
+                            // Ajuste de las flechas de navegación
+                            '& .MuiPickersCalendarHeader-root': {
+                                paddingLeft: '16px',
+                                paddingRight: '8px',
                             }
                         }}
                     />
                 </LocalizationProvider>
             </div>
 
-            
-            {selectedDate && (
-                <div className='flex flex-col w-full items-start justify-center mt-[30px]'>
-                    <p className='text-[#1e335f]'>Horarios disponibles: </p>
-                    <div className='flex items-center justify-center gap-[10px] p-[16px] rounded-[14px] w-[350px]  flex-wrap '>
 
-                    {data.map((appointment) => {
-                        return (
-                            <div className='bg-[#fff] text-[1.1rem] rounded-[14px] px-[16px] py-[8px] cursor-pointer'>{appointment.date.substring(11, 16)}</div>
-                        )
-                    })}
+            {selectedDate && (
+                <div className='flex flex-col w-full items-start justify-center mt-[10px]'>
+                    <p className='text-[#1e335f]'>Horarios disponibles: </p>
+                    <div className='flex items-center justify-center gap-[10px] mt-[20px] rounded-[14px] w-full h-full flex-wrap '>
+                        {data.length === 0 ? (
+                            <div className='bg-[#fff] w-fit text-[1.1rem] text-center p-[15px] rounded-[14px]'>No hay turnos disponibles para el dia seleccionado.</div>
+                        ) : (
+                            data
+                                .slice()
+                                .sort((a, b) => a.date.localeCompare(b.date))
+                                .map((appointment) => {
+                                    return (
+                                        <div
+                                            key={appointment.id}
+                                            onClick={() => setHourSelected(appointment.id)}
+                                            className={` text-[1rem] rounded-[14px] px-[16px] py-[8px] transition-all duration-[0.3s] cursor-pointer ${hourSelected === appointment.id ? "bg-[#0047ba] text-[#fff]" : "bg-[#fff] text-[#000]"}`}
+                                        >
+                                            {appointment.date.substring(11, 16)}
+                                        </div>
+                                    )
+                                })
+                        )}
+                    </div>
+                    <button
+                        onClick={() => {
+                            setModalConfirm(true);
+                            selectAppointment(hourSelected);
+                        }}
+                        className={`mx-auto cursor-pointer hover:opacity-[0.8] transition-all duration-300 mt-[45px] flex  items-center w-full justify-center bg-[#0047ba] text-[#fff] border-none rounded-[24px] text-[1.2rem] px-[24px] py-[10px]`}>
+                        Agendar turno
+                    </button>
                 </div>
-                </div>
-                
+
+            )}
+            {modalConfirm && createPortal(
+                <ModalConfirmAppointment setModalConfirm={setModalConfirm} confirmAppointment={confirmAppointment} assignedAppointment={assignedAppointment}/>,
+                document.body
             )}
         </div>
     )

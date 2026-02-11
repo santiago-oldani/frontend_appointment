@@ -57,7 +57,7 @@ const AppointmentLayout: React.FC = () => {
                     </div>
                 </div>
 
-                <div className='flex items-center justify-center gap-[50px]'>
+                <div className='flex items-start justify-center gap-[50px]'>
                     {arrayDivs.map((data, index) => {
                         return (
                             <AppointmentCards data={data} index={index} />

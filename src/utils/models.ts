@@ -25,8 +25,8 @@ export interface Professional {
 export interface Appointment {
     id: number;
     date: string;
-    specialty: Specialty;
-    professional: Professional;
+    specialty: Specialty | null;
+    professional: Professional | null;
     reserved: boolean
 }
 

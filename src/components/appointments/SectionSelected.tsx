@@ -5,9 +5,10 @@ import { FaUserDoctor } from "react-icons/fa6";
 interface AppointmentData {
     data: SelectDiv;
     specialtySelected?: Specialty | Professional;
+    changeSpecialtyOrProfessional: Function;
 }
 
-const SectionSelected: React.FC<AppointmentData> = ({ data, specialtySelected }) => {
+const SectionSelected: React.FC<AppointmentData> = ({ data, specialtySelected, changeSpecialtyOrProfessional }) => {
     
     // Función para verificar si es un Profesional (si tiene apellido, es médico)
     const isProfessional = (item: any): item is Professional => {
@@ -41,7 +42,7 @@ const SectionSelected: React.FC<AppointmentData> = ({ data, specialtySelected })
                     }
                 </span>
 
-                <span className="text-[#0567e8] cursor-pointer underline">Cambiar</span>
+                <span onClick={() => changeSpecialtyOrProfessional()} className="text-[#0567e8] cursor-pointer underline">Cambiar</span>
             </div>
 
             {/* CHECK DE CONFIRMACIÓN */}

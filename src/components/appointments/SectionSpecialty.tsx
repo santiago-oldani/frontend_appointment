@@ -15,7 +15,7 @@ const SectionSpecialty: React.FC<AppointmentData> = ({ data }) => {
     const { states, actions } = useAppointmentContext();
     const [specialtySelected, setSpecialtySelected] = useState<Specialty>();
     const { specialties } = states;
-    const { showSpecialties, setSpecialties, selectSpecialty } = actions;
+    const { showSpecialties, setSpecialties, selectSpecialty, changeSpecialty } = actions;
     const [searchTerm, setSearchTerm] = useState("");
 
     const iconMap: Record<string, JSX.Element> = {
@@ -58,6 +58,8 @@ const SectionSpecialty: React.FC<AppointmentData> = ({ data }) => {
         esp.name.toLowerCase().includes(searchTerm)
     );
 
+
+
     return (
 
         <>
@@ -98,7 +100,7 @@ const SectionSpecialty: React.FC<AppointmentData> = ({ data }) => {
                 </div> :
 
                 /* Lo que se muestra cuando ya seleccionaste una especialidad */
-                <SectionSelected data={data} specialtySelected={specialtySelected}/>
+                <SectionSelected data={data} specialtySelected={specialtySelected} changeSpecialtyOrProfessional={changeSpecialty}/>
 
             }
 

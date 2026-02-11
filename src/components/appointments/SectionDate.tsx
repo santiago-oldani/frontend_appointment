@@ -10,8 +10,8 @@ interface AppointmentData {
 
 const SectionDate: React.FC<AppointmentData> = ({ data }) => {
     const { states, actions } = useAppointmentContext();
-    const { availableAppointments } = states;
-    const { getAppointmentsAvailable } = actions;
+    const { availableAppointments, assignedAppointment } = states;
+    const { getAppointmentsAvailable, confirmAppointment, selectAppointment } = actions;
 
     return (
 
@@ -26,7 +26,7 @@ const SectionDate: React.FC<AppointmentData> = ({ data }) => {
                 </div> :
 
                 <div className="flex flex-col items-center justify-center self-center w-full h-full">
-                    <Calendar data={availableAppointments} getFunctionAppointments={getAppointmentsAvailable}/>
+                    <Calendar data={availableAppointments} getFunctionAppointments={getAppointmentsAvailable} confirmAppointment={confirmAppointment} selectAppointment={selectAppointment} assignedAppointment={assignedAppointment}/>
                 </div>
 
             }
