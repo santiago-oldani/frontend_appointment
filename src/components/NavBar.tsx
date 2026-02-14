@@ -18,13 +18,13 @@ const NavBar = () => {
         </div>
       </div>
 
-      <div className="flex flex-row relative items-center w-full justify-center bg-[#fff] h-[65px]">
-        <Link to={'/'}><img src={logo} alt="" className="w-[200px] absolute top-[22%] left-[4%] h-auto"/></Link>
+      <div className="flex flex-row relative items-center w-full justify-center bg-[#f9fafb] h-[65px]">
+        <Link to={'/'}><img src={logo} alt="" className="w-[200px] absolute top-[22%] left-[4%] h-auto" /></Link>
         <ul className="list-none flex flex-row items-center justify-center gap-[50px]">
-          <Link to={'/appointments'}><li id="li_azul">Turnos</li></Link>
-          <a href="#quienes_somos"><li id="li_azul">Quienes Somos</li></a>
-          <a href="#coberturas"><li id="li_azul">Coberturas</li></a>
-          <a href="#sedes"><li id="li_azul">Sedes</li></a>
+          <Link to={'/login-appointments'} className="text-[1.2rem] rounded-[14px] px-[8px] py-[4px] hover:bg-[#64aade] hover:text-[#fff] text-[#346cc8] transition-all duration-[0.3s]"><li>Turnos</li></Link>
+          <a href="#quienes_somos" className="text-[1.2rem] px-[8px] rounded-[14px] py-[4px] hover:bg-[#64aade] hover:text-[#fff] text-[#346cc8] transition-all duration-[0.3s]"><li >Quienes Somos</li></a>
+          <a href="#coberturas" className="text-[1.2rem] px-[8px] py-[4px] rounded-[14px] hover:bg-[#64aade] hover:text-[#fff] text-[#346cc8] transition-all duration-[0.3s]"><li >Coberturas</li></a>
+          <a href="#sedes" className="text-[1.2rem] px-[8px] py-[4px] rounded-[14px] hover:bg-[#64aade] hover:text-[#fff] text-[#346cc8] transition-all duration-[0.3s]"><li>Sedes</li></a>
         </ul>
       </div>
 

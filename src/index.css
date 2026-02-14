@@ -4,12 +4,6 @@
 @tailwind components;
 @tailwind utilities;
 
-#li_azul {
-    color: #346cc8;
-    font: medium;
-    font-size: 1.2rem;
-}
-
 body {
     margin: 0;
     font-family: "Inter", sans-serif;
@@ -27,4 +21,11 @@ p {
 
 html {
   scroll-behavior: smooth;
+}
+
+@layer base {
+  html {
+    /* Si 100% es 16px, el 90% es 14.4px */
+    font-size: 14.4px; 
+  }
 }

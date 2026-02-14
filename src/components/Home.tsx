@@ -19,7 +19,7 @@ const Welcome: React.FC = () => {
                     <h2 className='m-[0px] text-[2rem] text-[#12caff]'>Solicitala de forma online.</h2>
                     <p className='text-[1.5rem] text-[#346cc8] w-full'>Podés hacerlo de forma ágil y segura: contanos para quién es la solicitud, informá los síntomas y confirmá los datos.</p>
 
-                    <Link to={'/appointments'} className='w-full'>
+                    <Link to={'/login-appointments'} className='w-full'>
                         <div className='border hover:bg-[#0047ba] hover:text-[#fff] duration-500 border-solid border-[#12caff] text-[24px] flex items-center justify-center px-[60px] py-[20px] text-[#346cc8] rounded-[6px] cursor-pointer'>
                             Solicitar Turno
                         </div>

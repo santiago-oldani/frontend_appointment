@@ -14,9 +14,10 @@ interface getAppointmentsAvailable {
     confirmAppointment: Function;
     selectAppointment: Function;
     assignedAppointment: Appointment | undefined;
+    clearStatesOfAssignedAppointment: Function;
 }
 
-const Calendar: React.FC<getAppointmentsAvailable> = ({ data, getFunctionAppointments, confirmAppointment, selectAppointment, assignedAppointment }) => {
+const Calendar: React.FC<getAppointmentsAvailable> = ({ data, getFunctionAppointments, confirmAppointment, selectAppointment, assignedAppointment, clearStatesOfAssignedAppointment }) => {
     const [selectedDate, setSelectedDate] = useState<Dayjs | null>(dayjs());
     const [hourSelected, setHourSelected] = useState<number>();
     const [modalConfirm, setModalConfirm] = useState<boolean>(false);
@@ -40,7 +41,15 @@ const Calendar: React.FC<getAppointmentsAvailable> = ({ data, getFunctionAppoint
         getFunctionAppointments(selectedDate);
     }, [selectedDate])
 
-    console.log(data, "turnos disponibles");
+    useEffect(() =>{
+        if(data.length === 0){
+            setHourSelected(undefined);
+        }
+    }, [data])
+
+    console.log(assignedAppointment, "turnos disponibles");
+
+    console.log(hourSelected);
     return (
         <div className="flex flex-col h-full w-full items-center justify-start bg-white p-4 rounded-[20px] shadow-lg">
             <div className='bg-[#fff] rounded-[14px] shadow-[0_20px_50px_rgba(0,0,0,0.1)] h-fit'>
@@ -52,21 +61,21 @@ const Calendar: React.FC<getAppointmentsAvailable> = ({ data, getFunctionAppoint
                         onChange={handleDateChange}
                         maxDate={dayjs().add(45, 'days')}
                         sx={{
-                            width: "300px",
-                            height: '315px',
+                            width: "280px",
+                            height: '295px',
                             overflow: "hidden",
                             margin: "0 auto",
 
                             // 1. Nombre del MES y AÑO (Más grandes)
                             '& .MuiPickersCalendarHeader-label': {
-                                fontSize: '1.2rem', // Subimos de 1rem a 1.2rem
+                                fontSize: '1rem', // Subimos de 1rem a 1.2rem
                                 fontWeight: '700',
                                 color: '#0047ba'
                             },
 
                             // 2. Letras de los días: L, M, M, J... (Más grandes)
                             '& .MuiDayCalendar-weekDayLabel': {
-                                fontSize: '1rem', // Subimos a 1rem (tamaño estándar de lectura)
+                                fontSize: '0.9rem', // Subimos a 1rem (tamaño estándar de lectura)
                                 fontWeight: '600',
                                 width: '40px',    // Aumentamos el área para que no se pisen
                                 color: '#282e3d',
@@ -74,9 +83,9 @@ const Calendar: React.FC<getAppointmentsAvailable> = ({ data, getFunctionAppoint
 
                             // 3. Números de los días (Más grandes y legibles)
                             '& .MuiPickersDay-root': {
-                                fontSize: '1rem', // Antes era 0.85rem
-                                width: '40px',
-                                height: '40px',
+                                fontSize: '0.9rem', // Antes era 0.85rem
+                                width: '35px',
+                                height: '35px',
                                 fontWeight: '500',
                                 // Efecto al seleccionar
                                 '&.Mui-selected': {
@@ -139,18 +148,19 @@ const Calendar: React.FC<getAppointmentsAvailable> = ({ data, getFunctionAppoint
                         )}
                     </div>
                     <button
+                    disabled={!hourSelected}
                         onClick={() => {
                             setModalConfirm(true);
                             selectAppointment(hourSelected);
                         }}
-                        className={`mx-auto cursor-pointer hover:opacity-[0.8] transition-all duration-300 mt-[45px] flex  items-center w-full justify-center bg-[#0047ba] text-[#fff] border-none rounded-[24px] text-[1.2rem] px-[24px] py-[10px]`}>
+                        className={`mx-auto cursor-pointer ${!hourSelected ? "opacity-[0.6] cursor-not-allowed hover:none" : "cursor-pointer hover:opacity-[0.8]"} transition-all duration-300 mt-[15px] flex  items-center w-full justify-center bg-[#0047ba] text-[#fff] border-none rounded-[24px] text-[1.2rem] px-[24px] py-[10px]`}>
                         Agendar turno
                     </button>
                 </div>
 
             )}
             {modalConfirm && createPortal(
-                <ModalConfirmAppointment setModalConfirm={setModalConfirm} confirmAppointment={confirmAppointment} assignedAppointment={assignedAppointment}/>,
+                <ModalConfirmAppointment setModalConfirm={setModalConfirm} confirmAppointment={confirmAppointment} assignedAppointment={assignedAppointment} clearStatesOfAssignedAppointment={clearStatesOfAssignedAppointment}/>,
                 document.body
             )}
         </div>

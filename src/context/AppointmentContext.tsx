@@ -1,13 +1,12 @@
 import React, { createContext, useContext } from 'react';
 import { useAppointments } from '../hooks/useAppointments';
-import type { Patient } from '../utils/models';
 
 type AppointmentContextType = ReturnType<typeof useAppointments>;
 
 const AppointmentContext = createContext<AppointmentContextType | undefined>(undefined);
 
-export const AppointmentProvider: React.FC<{ children: React.ReactNode; patient: Patient }> = ({ children, patient }) => {
-    const appointmentData = useAppointments(patient);
+export const AppointmentProvider: React.FC<{ children: React.ReactNode}> = ({ children }) => {
+    const appointmentData = useAppointments();
 
     return (
         <AppointmentContext.Provider value={appointmentData}>

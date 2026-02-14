@@ -2,20 +2,30 @@ import './App.css'
 import NavBar from './components/NavBar'
 import Home from './components/Home'
 import { BrowserRouter, Routes, Route } from "react-router";
-import Appointment from './components/appointments/Appointment';
 import Footer from './components/Footer';
 import ScrollToTop from './components/ScrollToTop';
+import AppointmentContainer from './components/appointments/AppointmentContainer';
+import LogIntoAppointments from './components/LogIntoAppointments';
+import { AppointmentProvider } from './context/AppointmentContext';
 
 function App() {
   return (
     <BrowserRouter>
-      <NavBar />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/appointments" element={<Appointment />} />
-      </Routes>
-      <Footer/>
-      <ScrollToTop/>
+      <ScrollToTop />
+      <AppointmentProvider>
+        <Routes>
+          <Route path="/" element={<><NavBar /><Home /><Footer /></>} />
+
+          <Route path='/login-appointments' element={<LogIntoAppointments />} />
+
+          <Route path="/appointments" element={
+            <>
+              <AppointmentContainer />
+              <Footer />
+            </>
+          } />
+        </Routes>
+      </AppointmentProvider>
     </BrowserRouter>
   )
 }

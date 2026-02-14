@@ -27,11 +27,13 @@ export interface Appointment {
     date: string;
     specialty: Specialty | null;
     professional: Professional | null;
-    reserved: boolean
+    reserved: boolean;
+    patient: Patient;
 }
 
 export interface Patient {
     id: number;
+    dni: number;
     name: string;
     lastname: string;
 }

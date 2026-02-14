@@ -42,8 +42,8 @@ const SectionProfessional: React.FC<AppointmentData> = ({ data }) => {
                 /* CASO 1: No hay profesionales seleccionados por especialidad */
                 <div className="w-full h-full flex flex-col items-center justify-center">
                     <div className="relative">
-                        <FaUserDoctor color="#a3a6ab" size={90} className="flex-shrink-0" />
-                        <PiProhibitLight color="#a3a6ab" size={200} className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex-shrink-0" />
+                        <FaUserDoctor color="#a3a6ab" size={70} className="flex-shrink-0" />
+                        <PiProhibitLight color="#a3a6ab" size={170} className="absolute top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%] flex-shrink-0" />
                     </div>
                     <p className="text-[#282e3d] text-[1.2rem] font-300 text-center mt-[80px]">Primero seleccione una <strong>especialidad</strong> para ver nuestros profesionales.</p>
                 </div>
