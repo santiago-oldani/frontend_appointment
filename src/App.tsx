@@ -7,10 +7,12 @@ import ScrollToTop from './components/ScrollToTop';
 import AppointmentContainer from './components/appointments/AppointmentContainer';
 import LogIntoAppointments from './components/LogIntoAppointments';
 import { AppointmentProvider } from './context/AppointmentContext';
+import { Toaster } from 'react-hot-toast';
 
 function App() {
   return (
     <BrowserRouter>
+      <Toaster position="bottom-right" reverseOrder={false} />
       <ScrollToTop />
       <AppointmentProvider>
         <Routes>

@@ -25,19 +25,29 @@ const formatHora = (fechaStr: string | undefined) => {
 };
 
 const ModalConfirmAppointment: React.FC<ModalConfirmProps> = ({ setModalConfirm, confirmAppointment, assignedAppointment, clearStatesOfAssignedAppointment }) => {
-    const [appointmentConfirmed, setAppointmentConfirmed] = useState<boolean>(false);
-    const [secondsToRedirect, setSecondsToRedirect] = useState<number>(5);
+    const [secondsToRedirect, setSecondsToRedirect] = useState<number>(3);
+    const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+
+    const handleConfirm = async () => {
+        setStatus('loading');
+        const isOk = await confirmAppointment(assignedAppointment?.id);
+
+        if (isOk) {
+            setStatus('success');
+        } else {
+            setStatus('error');
+        }
+    };
 
     useEffect(() => {
-        if (!appointmentConfirmed || secondsToRedirect <= 0) return;
+        if (status === 'idle' || status === 'loading' || secondsToRedirect <= 0) return;
 
         const timer = setInterval(() => {
             setSecondsToRedirect((prev) => prev - 1);
         }, 1000);
 
         return () => clearInterval(timer);
-
-    }, [appointmentConfirmed, secondsToRedirect]);
+    }, [status, secondsToRedirect]);
 
     useEffect(() => {
         if (secondsToRedirect === 0) {
@@ -48,27 +58,31 @@ const ModalConfirmAppointment: React.FC<ModalConfirmProps> = ({ setModalConfirm,
 
     console.log(assignedAppointment?.date)
     return (
-        // fixed inset-0 debería bastar, pero agregamos w-screen h-screen por seguridad
         <div className="fixed inset-[0px] w-screen h-screen z-[9999] flex items-center justify-center bg-[rgba(0,0,0,0.4)] backdrop-blur-[12px]">
 
             {/* Contenedor del Modal */}
-            <div className="flex flex-col gap-[20px] justify-start items-start bg-[#fff] w-[90%] max-w-[400px] rounded-[14px] h-auto p-[55px] shadow-2xl relative">
-                {/* Botón X para cerrar */}
-                <div
-                    onClick={() => setModalConfirm(false)}
-                    className="absolute top-[20px] right-[20px] text-gray-500 hover:text-black cursor-pointer"
-                >
-                    <IoIosCloseCircleOutline size={40} color="#1e335f" className="flex-shrink-0" />
-                </div>
+            <div className="flex flex-col gap-[20px] min-h-[300px] justify-center items-start bg-[#fff] w-[90%] max-w-[400px] rounded-[14px] h-auto p-[55px] shadow-2xl relative">
 
-                {appointmentConfirmed ?
+                {status === 'loading' && 
+                    <p className="text-[#0047ba] text-center font-bold text-lg">Procesando tu turno...</p>
+                }
 
-                    (assignedAppointment?.reserved === true && assignedAppointment?.patient ? <ModalAppointmentChecked secondsToRedirect={secondsToRedirect} /> : <ModalAppointmentError secondsToRedirect={secondsToRedirect} />)
+                {status === 'success' && <ModalAppointmentChecked secondsToRedirect={secondsToRedirect} />}
 
-                    :
+                {status === 'error' && <ModalAppointmentError secondsToRedirect={secondsToRedirect} />}
 
+                {status === 'idle' && (
                     <>
+                        {/* Botón X para cerrar */}
+                        <div
+                            onClick={() => {
+                                setModalConfirm(false);
 
+                            }}
+                            className="absolute top-[20px] right-[20px] text-gray-500 hover:text-black cursor-pointer"
+                        >
+                            <IoIosCloseCircleOutline size={40} color="#1e335f" className="flex-shrink-0" />
+                        </div>
 
                         <h2 className="text-2xl font-bold text-[#0047ba] mb-[20px] text-[1.8rem]">Confirmar Turno</h2>
 
@@ -89,15 +103,14 @@ const ModalConfirmAppointment: React.FC<ModalConfirmProps> = ({ setModalConfirm,
                                 Cancelar
                             </button>
                             <button
-                                onClick={() => {
-                                    confirmAppointment(assignedAppointment?.id)
-                                    setAppointmentConfirmed(true);
-                                }}
+                                onClick={handleConfirm}
                                 className="flex-1 w-[250px] px-[30px] py-[5px] rounded-[12px] cursor-pointer text-[#fff] border-none bg-[#0047ba] text-white hover:opacity-90 transition-all">
                                 Confirmar
                             </button>
                         </div>
-                    </>}
+                    </>
+                )}
+
             </div>
         </div >
     );

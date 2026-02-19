@@ -10,14 +10,14 @@ dayjs.locale('es');
 
 interface getAppointmentsAvailable {
     data: Appointment[];
-    getFunctionAppointments: Function;
+    getAppointmentsAvailable: Function;
     confirmAppointment: Function;
     selectAppointment: Function;
     assignedAppointment: Appointment | undefined;
     clearStatesOfAssignedAppointment: Function;
 }
 
-const Calendar: React.FC<getAppointmentsAvailable> = ({ data, getFunctionAppointments, confirmAppointment, selectAppointment, assignedAppointment, clearStatesOfAssignedAppointment }) => {
+const Calendar: React.FC<getAppointmentsAvailable> = ({ data, getAppointmentsAvailable, confirmAppointment, selectAppointment, assignedAppointment, clearStatesOfAssignedAppointment }) => {
     const [selectedDate, setSelectedDate] = useState<Dayjs | null>(dayjs());
     const [hourSelected, setHourSelected] = useState<number>();
     const [modalConfirm, setModalConfirm] = useState<boolean>(false);
@@ -38,7 +38,7 @@ const Calendar: React.FC<getAppointmentsAvailable> = ({ data, getFunctionAppoint
     }, [data]);
 
     useEffect(() => {
-        getFunctionAppointments(selectedDate);
+        getAppointmentsAvailable(selectedDate);
     }, [selectedDate])
 
     useEffect(() =>{

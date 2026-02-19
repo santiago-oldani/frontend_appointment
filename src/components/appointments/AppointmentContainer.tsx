@@ -5,22 +5,29 @@ import NavBarAppointments from '../NavBarAppointments';
 import { useNavigate } from 'react-router'; //
 import { useEffect, useState } from "react";
 import NextAppointments from "./NextAppointments";
+import type { Patient } from "../../utils/models";
 
 const AppointmentContainer: React.FC = () => {
     const { states, actions } = useAppointmentContext();
     const { arrayDivs, patient, nextAppointmentsOfPatient } = states;
-    const { getNextAppointments, cancelAppointment } = actions;
+    const { getNextAppointments, cancelAppointment, setPatient } = actions;
     const [window, setWindow] = useState<string>("getAppointments");
-
-    console.log(patient);
+    const [patientInStorage, setPatientInStorage] = useState<Patient | undefined>(() => {
+        const saved = localStorage.getItem('current_patient');
+        return saved ? JSON.parse(saved) : undefined;
+    });
 
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (!patient) {
+
+        if (patientInStorage) {
+            setPatient(patientInStorage);
+        } else {
             navigate('/login-appointments');
         }
-    }, [patient, navigate]);
+
+    }, []);
 
     if (!patient) return null;
 
@@ -71,9 +78,9 @@ const AppointmentContainer: React.FC = () => {
                         )
                     })}
                 </div> :
-                
-                <NextAppointments nextAppointmentsOfPatient={nextAppointmentsOfPatient} cancelAppointment={cancelAppointment}/>
-                
+
+                    <NextAppointments nextAppointmentsOfPatient={nextAppointmentsOfPatient} cancelAppointment={cancelAppointment} />
+
                 }
 
 

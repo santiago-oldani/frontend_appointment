@@ -4,20 +4,16 @@ import { FaUserDoctor } from "react-icons/fa6";
 
 interface AppointmentData {
     data: SelectDiv;
-    specialtySelected?: Specialty | Professional;
-    changeSpecialtyOrProfessional: Function;
+    specialtySelected?: Specialty | Professional | null;
+    changeSpecialtyOrProfessional: () => void;
+    icon?: React.ReactNode;
 }
 
-const SectionSelected: React.FC<AppointmentData> = ({ data, specialtySelected, changeSpecialtyOrProfessional }) => {
-    
+const SectionSelected: React.FC<AppointmentData> = ({ data, specialtySelected, changeSpecialtyOrProfessional, icon }) => {
+
     // Función para verificar si es un Profesional (si tiene apellido, es médico)
     const isProfessional = (item: any): item is Professional => {
         return item && (item as Professional).lastname !== undefined;
-    };
-
-    // Función para verificar si es una Especialidad (si tiene la propiedad icono)
-    const isSpecialty = (item: any): item is Specialty => {
-        return item && (item as Specialty).icono !== undefined;
     };
 
     return (
@@ -25,18 +21,21 @@ const SectionSelected: React.FC<AppointmentData> = ({ data, specialtySelected, c
             <div className="h-[20px]"></div>
 
             <div className="bg-[#fff] flex items-center justify-center shadow-[0_20px_50px_rgba(0,0,0,0.1)] rounded-[14px] p-[20px] border-[2px] border-[#168027]">
-                
+
                 {/* CONTENEDOR DEL ICONO */}
                 <div className="flex items-center justify-center w-[35px] h-[35px] p-[10px] bg-[#168027] rounded-[8px] mr-[14px]">
                     <div className={data.state === "selected" ? "scale-[1.5]" : "scale-100"}>
-                        {isSpecialty(specialtySelected) && specialtySelected.icono}
-                        {isProfessional(specialtySelected) && <FaUserDoctor size={20} color="#fff" />}
+                        {/* Si es profesional, mostramos el doctor. Si no, el icono que vino por prop */}
+                        {isProfessional(specialtySelected)
+                            ? <FaUserDoctor size={20} color="#fff" />
+                            : icon
+                        }
                     </div>
                 </div>
 
                 {/* TEXTO: NOMBRE / NOMBRE Y APELLIDO */}
                 <span className="text-[#1a1d46] font-bold text-[1.4rem] mr-[25px]">
-                    {isProfessional(specialtySelected) 
+                    {isProfessional(specialtySelected)
                         ? `Dr. ${specialtySelected.name} ${specialtySelected.lastname}`
                         : specialtySelected?.name
                     }

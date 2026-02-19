@@ -6,41 +6,47 @@ import { MdGrain } from "react-icons/md";
 import { GiLungs } from "react-icons/gi";
 import { useAppointmentContext } from "../../context/AppointmentContext";
 import SectionSelected from "./SectionSelected";
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
 interface AppointmentData {
     data: SelectDiv;
 }
 
+const getIcon = (name: string, size: number) => {
+    const icons: Record<string, JSX.Element> = {
+        "Odontología": <FaTooth size={size} color="#fff" />,
+        "Oftalmología": <IoEyeSharp size={size} color="#fff" />,
+        "Cardiología": <FaHeart size={size} color="#fff" />,
+        "Dermatologia": <MdGrain size={size} color="#fff" />,
+        "Neumología": <GiLungs size={size} color="#fff" />,
+        "Neurología": <FaBrain size={size} color="#fff" />
+    };
+    return icons[name] || null;
+};
+
 const SectionSpecialty: React.FC<AppointmentData> = ({ data }) => {
     const { states, actions } = useAppointmentContext();
     const [specialtySelected, setSpecialtySelected] = useState<Specialty>();
-    const { specialties } = states;
+    const { specialties, assignedAppointment } = states;
     const { showSpecialties, setSpecialties, selectSpecialty, changeSpecialty } = actions;
     const [searchTerm, setSearchTerm] = useState("");
+    const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
 
-    const iconMap: Record<string, JSX.Element> = {
-        "Odontología": <FaTooth size={data.state === "selected" ? 60 : 15} color="#fff" className="flex-shrink-0" />,
-        "Oftalmología": <IoEyeSharp size={15} color="#fff" className="flex-shrink-0" />,
-        "Cardiología": <FaHeart size={15} color="#fff" className="flex-shrink-0" />,
-        "Dermatologia": <MdGrain size={15} color="#fff" className="flex-shrink-0" />,
-        "Neumología": <GiLungs size={15} color="#fff" className="flex-shrink-0" />,
-        "Neurología": <FaBrain size={15} color="#fff" className="flex-shrink-0" />
-    }
 
-    useEffect(() => {
-        showSpecialties();
-    }, []);
+    const areSpecialties = async () => {
+        setStatus('loading');
+        const isOk = await showSpecialties();
 
-    useEffect(() => {
-        if (specialties.length > 0 && !specialties[0].icono) {
-            setSpecialties(prev =>
-                prev.map(esp => ({
-                    ...esp,
-                    icono: iconMap[esp.name]
-                }))
-            );
+        if (isOk) {
+            setStatus('success');
+        } else {
+            setStatus('error');
         }
-    }, [specialties, setSpecialties]);
+    };
+
+    useEffect(() => {
+        areSpecialties();
+    }, []);
 
     const specialtyClicked = (specialty: Specialty | undefined) => {
         if (!specialty) {
@@ -58,10 +64,7 @@ const SectionSpecialty: React.FC<AppointmentData> = ({ data }) => {
         esp.name.toLowerCase().includes(searchTerm)
     );
 
-
-
     return (
-
         <>
             {data.state === "next" ?
 
@@ -77,19 +80,41 @@ const SectionSpecialty: React.FC<AppointmentData> = ({ data }) => {
                         <IoSearchSharp size={25} className="flex-shrink-0" color="#a3a6ab" />
                     </div>
 
-                    <div className="grid grid-cols-2 gap-[12px] p-[12px] w-full shadow-[0_20px_50px_rgba(0,0,0,0.1)] bg-white rounded-[20px] ">
-                        {filteredList.map((specialty) => {
-                            return (
-                                <div
-                                    key={specialty.name}
-                                    onClick={() => specialtyClicked(specialty)}
-                                    className={`flex items-center justify-center w-[100px] ${specialtySelected?.name === specialty.name ? "bg-[#155c85] hover:none" : "bg-[#a6cae6] hover:bg-[#85b5d9]"}  rounded-[12px] gap-[10px] px-[20px] py-[10px] cursor-pointer  transition-colors`}>
-                                    {specialty.icono}
-                                    <span className="text-[#fff] font-medium whitespace-nowrap">{specialty.name}</span>
-                                </div>
-                            )
-                        })}
-                    </div>
+                    {status === 'loading' &&
+                        <div className="flex flex-col items-center justify-center gap-[20px] self-center">
+                            <AiOutlineLoading3Quarters
+                                className="spinner-fijo text-[#0047ba]"
+                                size={40}
+                            />
+                            <p className="text-[#1e335f] font-medium">Obteniendo especialidades...</p>
+                        </div>
+                    }
+
+                    {status === 'error' && <p className="text-[#0047ba] text-center font-bold text-lg">No se encontraron especialidades.</p>}
+
+                    {status === 'success' && (
+                        <div className="grid grid-cols-2 gap-[12px] p-[12px] w-full shadow-[0_20px_50px_rgba(0,0,0,0.1)] bg-white rounded-[20px] ">
+                            {filteredList.map((specialty) => {
+                                return (
+                                    <div
+                                        key={specialty.id}
+                                        onClick={() => specialtyClicked(specialty)}
+                                        className={`flex items-center justify-center w-[100px] ${specialtySelected?.name === specialty.name ? "bg-[#155c85] hover:none" : "bg-[#a6cae6] hover:bg-[#85b5d9]"}  rounded-[12px] gap-[10px] px-[20px] py-[10px] cursor-pointer  transition-colors`}
+                                    >
+                                        <div className="flex-shrink-0">
+                                            {getIcon(specialty.name, 15)}
+                                        </div>
+                                        <span className="text-[#fff] font-medium whitespace-nowrap">
+                                            {specialty.name}
+                                        </span>
+                                    </div>
+                                )
+                            })}
+
+
+                            
+                        </div>
+                    )}
 
                     <button
                         onClick={() => specialtySelected && selectSpecialty(specialtySelected.id)}
@@ -100,11 +125,9 @@ const SectionSpecialty: React.FC<AppointmentData> = ({ data }) => {
                 </div> :
 
                 /* Lo que se muestra cuando ya seleccionaste una especialidad */
-                <SectionSelected data={data} specialtySelected={specialtySelected} changeSpecialtyOrProfessional={changeSpecialty}/>
+                <SectionSelected data={data} specialtySelected={assignedAppointment?.specialty} changeSpecialtyOrProfessional={changeSpecialty} icon={getIcon(assignedAppointment?.specialty?.name || "", 20)} />
 
             }
-
-
         </>
     )
 }

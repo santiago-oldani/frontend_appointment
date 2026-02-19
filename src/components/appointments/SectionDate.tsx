@@ -26,7 +26,7 @@ const SectionDate: React.FC<AppointmentData> = ({ data }) => {
                 </div> :
 
                 <div className="flex flex-col items-center justify-center self-center w-full h-full">
-                    <Calendar data={availableAppointments} getFunctionAppointments={getAppointmentsAvailable} clearStatesOfAssignedAppointment={clearStatesOfAssignedAppointment} confirmAppointment={confirmAppointment} selectAppointment={selectAppointment} assignedAppointment={assignedAppointment}/>
+                    <Calendar data={availableAppointments} getAppointmentsAvailable={getAppointmentsAvailable} clearStatesOfAssignedAppointment={clearStatesOfAssignedAppointment} confirmAppointment={confirmAppointment} selectAppointment={selectAppointment} assignedAppointment={assignedAppointment}/>
                 </div>
 
             }

@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import type { Specialty, Professional, Appointment, SelectDiv, Patient } from '../utils/models';
 import type { Dayjs } from 'dayjs';
+import toast from 'react-hot-toast';
 
 export const useAppointments = () => {
     const [arrayDivs, setArrayDivs] = useState<SelectDiv[]>([
@@ -17,14 +18,26 @@ export const useAppointments = () => {
     const [showNextAppointments, setShowNextAppointments] = useState(false);
     const [patient, setPatient] = useState<Patient>();
 
-    function showSpecialties(): void {
-        fetch("http://localhost:8081/api/specialties")
-            .then((res) => res.json())
-            .then((data) => setSpecialties(data))
-            .catch((error) => console.error("Error al obtener las especialidades: ", error))
+    async function showSpecialties(): Promise<boolean> {
+        try {
+            const response = await fetch("http://localhost:8081/api/specialties");
+
+            if (!response.ok) {
+                throw new Error('Ha ocurrido un error en el servidor al obtener las especialidades');
+            }
+
+            const data: Specialty[] = await response.json();
+
+            setSpecialties(data);
+            return true;
+
+        } catch (error) {
+            console.error("Error al obtener las especialidades: ", error)
+            return false;
+        }
     }
 
-    function selectSpecialty(specialtyId: number): void {
+    async function selectSpecialty(specialtyId: number): Promise<void> {
         const specialty = specialties.find((spec) => spec.id === specialtyId);
 
         if (!specialty) {
@@ -32,24 +45,33 @@ export const useAppointments = () => {
             return;
         }
 
-        setAssignedAppointment(prev => ({ ...prev, specialty: specialty } as Appointment))
+        try {
+            const response = await fetch(`http://localhost:8081/api/professionals/by-specialtyId?specialtyId=${specialtyId}`);
 
-        fetch(`http://localhost:8081/api/professionals/by-specialtyId?specialtyId=${specialtyId}`)
-            .then((res) => res.json())
-            .then((data) => setProfessionals(data))
-            .catch((error) => console.error("Error al obtener los profesionales: ", error))
+            if (!response.ok) {
+                throw new Error('Ha ocurrido un error obteniendo los profesionalidades de la especialidad seleccionada.')
+            }
 
-        setArrayDivs(prevArray =>
-            prevArray.map((item, index) => {
-                if (index === 0) return { ...item, state: "selected" };
-                if (index === 1) return { ...item, state: "next" };
-                if (index === 2) return { ...item, state: "blocked" };
-                return item;
-            })
-        );
+            const data = await response.json();
+
+            setProfessionals(data);
+
+            setAssignedAppointment(prev => ({ ...prev, specialty: specialty } as Appointment))
+
+            setArrayDivs(prevArray =>
+                prevArray.map((item, index) => {
+                    if (index === 0) return { ...item, state: "selected" };
+                    if (index === 1) return { ...item, state: "next" };
+                    if (index === 2) return { ...item, state: "blocked" };
+                    return item;
+                })
+            );
+        } catch (error) {
+            console.error("Error al obtener los profesionales: ", error)
+        }
     }
 
-    function selectProfessional(professionalId: number): void {
+    async function selectProfessional(professionalId: number): Promise<void> {
         const professional = professionals.find((prof) => prof.id === professionalId);
 
         if (!professional) {
@@ -59,11 +81,6 @@ export const useAppointments = () => {
 
         setAssignedAppointment(prev => ({ ...prev, professional: professional } as Appointment))
 
-        fetch(`http://localhost:8081/api/appointments/available/${professionalId}`)
-            .then((res) => res.json())
-            .then((data) => setAvailableAppointments(data))
-            .catch((error) => console.error(error))
-
         setArrayDivs(prevArray =>
             prevArray.map((item, index) => {
                 if (index === 0) return { ...item, state: "selected" };
@@ -72,18 +89,28 @@ export const useAppointments = () => {
                 return item;
             })
         );
+
     }
 
-    function getAppointmentsAvailable(date: Dayjs): void {
+    async function getAppointmentsAvailable(date: Dayjs): Promise<void> {
         const formattedDate = date.format('YYYY-MM-DD');
 
-        fetch(`http://localhost:8081/api/appointments/available?professionalId=${assignedAppointment?.professional?.id}&date=${formattedDate}`)
-            .then((res) => {
-                if (!res.ok) throw new Error('Error en la respuesta del servidor');
-                return res.json();
-            })
-            .then((data) => setAvailableAppointments(data))
-            .catch((error) => console.error("Error en fetch:", error));
+        if(!assignedAppointment?.professional){
+            throw new Error('No hay ningun profesional seleccionado en el turno creado');
+        }
+
+        try {
+            const response = await fetch(`http://localhost:8081/api/appointments/available?professionalId=${assignedAppointment?.professional?.id}&date=${formattedDate}`);
+
+            if (!response.ok) throw new Error('Error en la respuesta del servidor');
+
+            const data: Appointment[] = await response.json();
+
+            setAvailableAppointments(data)
+
+        } catch (error) {
+            console.error("Ocurrio un error en trayendo los appointments disponibles.", error)
+        }
     }
 
     function changeSpecialty() {
@@ -135,16 +162,30 @@ export const useAppointments = () => {
         }
     }
 
-    function confirmAppointment(appointmentId: number): void {
-        if (availableAppointments.find((appointment) => appointment.id === appointmentId)) {
-            fetch(`http://localhost:8081/api/appointments/${appointmentId}/assign`, {  // fetch para actualizar turno con paciente y true a reserved
+    async function confirmAppointment(appointmentId: number): Promise<boolean> {
+        if (!availableAppointments.find((app) => app.id === appointmentId)) {
+            console.warn("El turno no está disponible.");
+            return false;
+        }
+
+        try {
+            const response = await fetch(`http://localhost:8081/api/appointments/${appointmentId}/assign`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ id: patient?.id })
-            })
-                .then((res) => res.json())
-                .then((data) => setAssignedAppointment(data))
-                .catch((error) => console.error("No se ha podido asignar el turno", error))
+            });
+
+            if (!response.ok) {
+                throw new Error(`Error del servidor: ${response.status}`);
+            }
+
+            const data = await response.json();
+
+            setAssignedAppointment(data);
+            return true;
+        } catch (error) {
+            console.error(error);
+            return false;
         }
     }
 
@@ -164,21 +205,21 @@ export const useAppointments = () => {
     }
 
     const getNextAppointments = async (patientId: number) => {
-    try {
-        const response = await fetch(`http://localhost:8081/api/appointments/reserved/${patientId}`);
-        if (response.ok) {
-            const data: Appointment[] = await response.json();
+        try {
+            const response = await fetch(`http://localhost:8081/api/appointments/reserved/${patientId}`);
+            if (response.ok) {
+                const data: Appointment[] = await response.json();
 
-            const sorted = data.sort((a, b) => 
-                new Date(a.date).getTime() - new Date(b.date).getTime()
-            );
+                const sorted = data.sort((a, b) =>
+                    new Date(a.date).getTime() - new Date(b.date).getTime()
+                );
 
-            setNextAppointmentsOfPatient(sorted);
+                setNextAppointmentsOfPatient(sorted);
+            }
+        } catch (error) {
+            console.error("Error al obtener turnos:", error);
         }
-    } catch (error) {
-        console.error("Error al obtener turnos:", error);
-    }
-};
+    };
 
     function cancelAppointment(appointmentId: number, patientId: number): void {
         fetch(`http://localhost:8081/api/appointments/cancel/${appointmentId}`, {
@@ -187,8 +228,30 @@ export const useAppointments = () => {
             .then((res) => {
                 if (!res.ok) throw new Error(`Error HTTP ${res.status}`);
                 getNextAppointments(patientId);
+                toast.success('Turno cancelado exitosamente', {
+                    duration: 4000,
+                    style: {
+                        borderRadius: '12px',
+                        background: '#0047ba',
+                        color: '#fff',
+                        padding: '20px 28px',
+                        fontSize: '18px',
+                        fontWeight: 'bold',
+                        maxWidth: '450px',
+
+                    },
+                    iconTheme: {
+                        primary: "#fff",
+                        secondary: '#0047ba'
+                    }
+
+                });
             })
-            .catch((error) => console.error("Error al cancelar el turno", error));
+            .catch((error) => {
+                console.error("Error al cancelar el turno", error);
+                toast.error('No se pudo cancelar el turno. Intente luego.');
+            });
+
     }
 
     return {
