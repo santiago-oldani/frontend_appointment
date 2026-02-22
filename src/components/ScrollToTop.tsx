@@ -36,9 +36,9 @@ const ScrollToTop: React.FC = () => {
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.9 }}
                     onClick={scrollToTop}
-                    className="fixed bottom-[70px] p-[20px] right-[100px] z-[2000] bg-[#0047ba] p-4 rounded-full shadow-2xl cursor-pointer border-none flex items-center justify-center hover:bg-[#12caff] transition-colors duration-300"
+                    className="fixed bottom-[70px] p-[20px] max-[400px]:bg-[#12caff] max-[400px]:right-[20px] 12caff max-[400px]:p-[15px] right-[50px] z-[2000] bg-[#0047ba] p-4 rounded-full shadow-2xl cursor-pointer border-none flex items-center justify-center hover:bg-[#12caff] transition-colors duration-300"
                 >
-                    <FaArrowUp size={30} color='#fff'/>
+                    <FaArrowUp size={30} color='#fff' className='max-[400px]:w-[22px] max-[400px]:h-[22px]'/>
                 </motion.button>
             )}
         </AnimatePresence>

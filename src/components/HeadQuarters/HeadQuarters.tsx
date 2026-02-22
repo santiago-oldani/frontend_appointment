@@ -63,9 +63,9 @@ const HeadQuarters: React.FC = () => {
     return (
         <section id="sedes" className="bg-[#f9fafb] h-auto w-full flex flex-row  flex-wrap items-center justify-center">
             <div className="flex relative items-center justify-center py-[10px] w-full h-[40px] bg-[#0047ba]">
-                <h1 className="text-[#fff] text-[1.8rem]">Sedes</h1>
+                <h1 className="text-[#fff] text-[1.8rem] max-[550px]:text-[1.5rem]">Sedes</h1>
             </div>
-            <div className="w-full h-full flex flex-row flex-wrap items-center gap-[80px] justify-center py-[80px]">
+            <div className="w-full h-full flex flex-row flex-wrap items-center gap-[20px] justify-center py-[80px]">
                 {sedesArray.map((sede) => {
                     return (
                         <ContainerHeadQuarters sede={sede} />

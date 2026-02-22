@@ -38,7 +38,7 @@ const NextAppointments: React.FC<propsNextAppointments> = ({ nextAppointmentsOfP
                         const { month, day, time } = formatDate(turno.date);
 
                         return (
-                            <div key={turno.id} className="flex items-center justify-between bg-white p-[24px] rounded-[24px] shadow-[0_10px_30px_rgba(0,0,0,0.05)] border border-[#f0f0f3]">
+                            <div key={turno.id} className="flex items-center justify-between bg-white p-[24px] rounded-[24px] shadow-[0_10px_30px_rgba(0,0,0,0.05)] border border-[#f0f0f3] max-[750px]:flex-col max-[750px]:gap-[20px] ">
                                 <div className="flex flex-col items-center justify-center bg-[#f0f7ff] text-[#0047ba] p-[15px] rounded-[18px] min-w-[90px]">
                                     <span className="text-[12px] font-bold uppercase">{month}</span>
                                     <span className="text-[24px] font-black">{day}</span>

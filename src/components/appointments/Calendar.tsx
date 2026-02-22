@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import type { Appointment } from '../../utils/models';
 import ModalConfirmAppointment from '../modals/ModalConfirmAppointment';
 import { createPortal } from 'react-dom';
+import 'dayjs/locale/es';
 dayjs.locale('es');
 
 interface getAppointmentsAvailable {
@@ -53,7 +54,7 @@ const Calendar: React.FC<getAppointmentsAvailable> = ({ data, getAppointmentsAva
     return (
         <div className="flex flex-col h-full w-full items-center justify-start bg-white p-4 rounded-[20px] shadow-lg">
             <div className='bg-[#fff] rounded-[14px] shadow-[0_20px_50px_rgba(0,0,0,0.1)] h-fit'>
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <LocalizationProvider adapterLocale='es' dateAdapter={AdapterDayjs}>
                     <DateCalendar
                         value={selectedDate}
                         views={['day']}
