@@ -16,7 +16,7 @@ const LogIntoAppointments: React.FC = () => {
         lastname: ''
     });
 
-    const [patientInStorage, setPatientInStorage] = useState<Patient | undefined>(() => {
+    const [patientInStorage, _setPatientInStorage] = useState<Patient | undefined>(() => {
         const saved = localStorage.getItem('current_patient');
         return saved ? JSON.parse(saved) : undefined;
     });

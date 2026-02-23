@@ -28,7 +28,7 @@ const SectionSpecialty: React.FC<AppointmentData> = ({ data }) => {
     const { states, actions } = useAppointmentContext();
     const [specialtySelected, setSpecialtySelected] = useState<Specialty>();
     const { specialties, assignedAppointment } = states;
-    const { showSpecialties, setSpecialties, selectSpecialty, changeSpecialty } = actions;
+    const { showSpecialties, selectSpecialty, changeSpecialty } = actions;
     const [searchTerm, setSearchTerm] = useState("");
     const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
 

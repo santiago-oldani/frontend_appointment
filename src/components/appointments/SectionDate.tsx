@@ -1,6 +1,6 @@
 import { FaRegCalendarTimes } from "react-icons/fa";
 import { PiProhibitLight } from "react-icons/pi";
-import type { Patient, SelectDiv } from "../../utils/models";
+import type { SelectDiv } from "../../utils/models";
 import Calendar from "./Calendar";
 import { useAppointmentContext } from "../../context/AppointmentContext";
 

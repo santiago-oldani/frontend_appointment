@@ -2,7 +2,6 @@ import { IoIosCloseCircleOutline } from "react-icons/io";
 import type { Appointment } from "../../utils/models";
 import dayjs from 'dayjs';
 import 'dayjs/locale/es';
-import { useState } from "react";
 dayjs.locale('es');
 
 // "2026-02-12T06:00:00" -> "12 de Febrero, 2026"

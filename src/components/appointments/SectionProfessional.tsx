@@ -2,8 +2,8 @@ import { FaUserDoctor } from "react-icons/fa6";
 import { PiProhibitLight } from "react-icons/pi";
 import { useAppointmentContext } from "../../context/AppointmentContext";
 import Rating from '@mui/material/Rating';
-import { useEffect, useState } from "react";
-import type { Professional, SelectDiv } from "../../utils/models";
+import { useState } from "react";
+import type { SelectDiv } from "../../utils/models";
 import SectionSelected from "./SectionSelected";
 
 interface AppointmentData {
