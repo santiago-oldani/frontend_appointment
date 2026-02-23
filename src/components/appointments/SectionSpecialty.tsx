@@ -68,16 +68,16 @@ const SectionSpecialty: React.FC<AppointmentData> = ({ data }) => {
         <>
             {data.state === "next" ?
 
-                <div className="flex flex-col items-center self-center my-auto justify-center gap-[10px]">
+                <div className="flex flex-col items-center self-center my-auto max-[600px]:my-[6px] max-[600px]:h-fit justify-center gap-[10px]">
 
-                    <div className="flex items-center justify-center bg-[#fff] rounded-[12px] p-[8px] w-full shadow-[0_20px_50px_rgba(0,0,0,0.1)] mb-[35px]">
+                    <div className="flex items-center justify-center bg-[#fff] rounded-[12px] max-[600px]:p-[6px] p-[8px] w-full shadow-[0_20px_50px_rgba(0,0,0,0.1)] mb-[35px] max-[600px]:mb-[20px]">
                         <input
                             type="text"
                             placeholder="Especialidad..."
-                            className="flex-1 border-none text-[1rem] outline-none bg-transparent"
+                            className="flex-1 border-none text-[1rem] outline-none bg-transparent  "
                             onChange={(e) => filterSpecialties(e)}
                         />
-                        <IoSearchSharp size={25} className="flex-shrink-0" color="#a3a6ab" />
+                        <IoSearchSharp size={25} className="flex-shrink-0 max-[600px]:w-[20px] max-[600px]:h-[20px]" color="#a3a6ab" />
                     </div>
 
                     {status === 'loading' &&
@@ -99,7 +99,7 @@ const SectionSpecialty: React.FC<AppointmentData> = ({ data }) => {
                                     <div
                                         key={specialty.id}
                                         onClick={() => specialtyClicked(specialty)}
-                                        className={`flex items-center justify-center w-[100px] ${specialtySelected?.name === specialty.name ? "bg-[#155c85] hover:none" : "bg-[#a6cae6] hover:bg-[#85b5d9]"}  rounded-[12px] gap-[10px] px-[20px] py-[10px] cursor-pointer  transition-colors`}
+                                        className={`flex items-center justify-center w-[100px] ${specialtySelected?.name === specialty.name ? "bg-[#155c85] hover:none" : "bg-[#a6cae6] hover:bg-[#85b5d9]"} max-[1220px]:w-[75px] max-[600px]:w-[60px] max-[600px]:text-[12px] max-[600px]:gap-[5px] rounded-[12px] gap-[10px] px-[20px] max-[600px]:py-[5px] py-[10px] cursor-pointer  transition-colors`}
                                     >
                                         <div className="flex-shrink-0">
                                             {getIcon(specialty.name, 15)}
@@ -119,7 +119,7 @@ const SectionSpecialty: React.FC<AppointmentData> = ({ data }) => {
                     <button
                         onClick={() => specialtySelected && selectSpecialty(specialtySelected.id)}
                         disabled={!specialtySelected}
-                        className={`mx-auto  ${!specialtySelected ? "opacity-[0.6] cursor-not-allowed hover:none" : "cursor-pointer hover:opacity-[0.8]"} mb-[50px] transition-all duration-300 mt-[20px] flex  items-center w-full justify-center bg-[#0047ba] text-[#fff] border-none rounded-[24px] text-[1.2rem] px-[24px] py-[10px]`}>
+                        className={`mx-auto  ${!specialtySelected ? "opacity-[0.6] cursor-not-allowed hover:none" : "cursor-pointer hover:opacity-[0.8]"} mb-[50px] transition-all duration-300 mt-[20px] flex max-[600px]:mb-[10px] items-center w-full justify-center bg-[#0047ba] text-[#fff] border-none rounded-[24px] text-[1.2rem] px-[24px] py-[10px] max-[600px]:text-[1rem] max-[600px]:py-[8px]`}>
                         Seleccionar
                     </button>
                 </div> :

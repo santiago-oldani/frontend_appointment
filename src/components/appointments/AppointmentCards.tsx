@@ -32,25 +32,24 @@ const AppointmentCards: React.FC<AppointmentCardsProps> = ({ data, index }) => {
     const cardHeight = getCardHeight();
 
     return (
-        <div className={`flex flex-col p-[20px] ${cardHeight} items-start shadow-[0_20px_50px_rgba(0,0,0,0.1)] w-[315px] p-8 bg-[#eeeff1] rounded-[32px] shadow-2xl transition-all duration-500 border-[6px] ${borderColor}`}>
+        <div className={`flex flex-col p-[20px] ${cardHeight} max-[600px]:border-[5px] ${data.state === 'blocked' && 'max-[600px]:h-[400px]'} ${data.state === 'selected' && 'max-[600px]:h-[380px]'} ${data.state === 'next' && data.title.toLocaleLowerCase() === "especialidad" && "max-[600px]:h-auto"} max-[1220px]:w-[250px] max-[600px]:w-[200px] items-start shadow-[0_20px_50px_rgba(0,0,0,0.1)] w-[315px] p-8 bg-[#eeeff1] rounded-[32px] shadow-2xl transition-all duration-500 border-[6px] ${borderColor}`}>
             {/* Círculo con el número del paso */}
-            <div className={`flex items-center justify-center w-[45px] h-[45px] flex-shrink-0 mb-6 rounded-full ${borderColor} border-[8px] bg-transparent`}>
+            <div className={`flex items-center justify-center w-[45px] h-[45px] max-[600px]:w-[30px] max-[600px]:h-[30px] flex-shrink-0 mb-6 rounded-full ${borderColor} max-[600px]:border-[4px] border-[8px] bg-transparent`}>
                 <span
                     style={{
                         fontWeight: 900,
-                        fontSize: '24px',
                         fontFamily: '"Inter", sans-serif',
                         color: "#1e335f"
                     }}
-                    className="text-[#1e335f] leading-none"
+                    className="text-[#1e335f] leading-none max-[600px]:text-[18px] text-[24px]"
                 >
                     {index + 1}
                 </span>
             </div>
 
             <div className="text-start mb-[30px]">
-                <h2 className="text-[#1e335f] text-2xl font-bold mb-2">{data.title}</h2>
-                <p className="text-[#282e3d] text-[1.2rem] mb-6">{data.desc}</p>
+                <h2 className="text-[#1e335f] text-2xl font-bold mb-2 max-[600px]:text-[1.4rem]">{data.title}</h2>
+                <p className="text-[#282e3d] text-[1.2rem] mb-6 max-[600px]:text-[1rem]">{data.desc}</p>
             </div>
 
             {/* SECCION DE ESPECIALIDAD */}

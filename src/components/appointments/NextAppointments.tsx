@@ -44,7 +44,7 @@ const NextAppointments: React.FC<propsNextAppointments> = ({ nextAppointmentsOfP
                                     <span className="text-[24px] font-black">{day}</span>
                                 </div>
 
-                                <div className="flex-1 ml-[25px]">
+                                <div className="flex-1 max-[600px]:ml-[0px] ml-[25px]">
                                     <span className=" text-[14px] font-medium text-[#000]">{turno.professional?.specialty?.name}</span>
                                     <h4 className="text-[#202c3d] text-[18px] font-bold">Dr. {turno.professional?.name} {turno.professional?.lastname}</h4>
                                     <div className="flex items-center gap-[8px] mt-[4px]">

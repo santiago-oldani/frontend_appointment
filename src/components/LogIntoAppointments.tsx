@@ -95,7 +95,7 @@ const LogIntoAppointments: React.FC = () => {
         if (!validate()) return;
 
         try {
-            const response = await fetch('https://backendappointment-production-29f0.up.railway.app/api/patient', {
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/patient`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -105,7 +105,6 @@ const LogIntoAppointments: React.FC = () => {
 
             if (response.ok) {
                 const data: Patient = await response.json();
-                console.log(data, "DATA QUE ME TRAE EL FETCH");
                 setPatient(data);
                 savePatient(data);
                 navigate('/appointments');
@@ -131,8 +130,6 @@ const LogIntoAppointments: React.FC = () => {
     if (patientInStorage) {
         return <div className="min-h-screen bg-white"></div>;
     }
-
-    console.log(patient)
 
     return (
         <div className="min-h-[100vh] flex items-center justify-center bg-gradient-to-br from-[#0f172a] via-[#1e293b] to-[#0f172a] p-[35px] relative">

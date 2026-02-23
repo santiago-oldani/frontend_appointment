@@ -25,10 +25,6 @@ const Calendar: React.FC<getAppointmentsAvailable> = ({ data, getAppointmentsAva
 
     const handleDateChange = (nuevaFecha: Dayjs | null) => {
         setSelectedDate(nuevaFecha);
-
-        if (nuevaFecha) {
-            console.log("Fecha elegida para el turno:", nuevaFecha.format('YYYY-MM-DD'));
-        }
     };
 
     useEffect(() => {
@@ -42,15 +38,12 @@ const Calendar: React.FC<getAppointmentsAvailable> = ({ data, getAppointmentsAva
         getAppointmentsAvailable(selectedDate);
     }, [selectedDate])
 
-    useEffect(() =>{
-        if(data.length === 0){
+    useEffect(() => {
+        if (data.length === 0) {
             setHourSelected(undefined);
         }
     }, [data])
 
-    console.log(assignedAppointment, "turnos disponibles");
-
-    console.log(hourSelected);
     return (
         <div className="flex flex-col h-full w-full items-center justify-start bg-white p-4 rounded-[20px] shadow-lg">
             <div className='bg-[#fff] rounded-[14px] shadow-[0_20px_50px_rgba(0,0,0,0.1)] h-fit'>
@@ -62,39 +55,75 @@ const Calendar: React.FC<getAppointmentsAvailable> = ({ data, getAppointmentsAva
                         onChange={handleDateChange}
                         maxDate={dayjs().add(45, 'days')}
                         sx={{
+                            // --- TAMAÑO DESKTOP (Default) ---
                             width: "280px",
-                            height: '295px',
+                            height: '325px',
                             overflow: "hidden",
                             margin: "0 auto",
 
-                            // 1. Nombre del MES y AÑO (Más grandes)
-                            '& .MuiPickersCalendarHeader-label': {
-                                fontSize: '1rem', // Subimos de 1rem a 1.2rem
-                                fontWeight: '700',
-                                color: '#0047ba'
-                            },
-
-                            // 2. Letras de los días: L, M, M, J... (Más grandes)
-                            '& .MuiDayCalendar-weekDayLabel': {
-                                fontSize: '0.9rem', // Subimos a 1rem (tamaño estándar de lectura)
-                                fontWeight: '600',
-                                width: '40px',    // Aumentamos el área para que no se pisen
-                                color: '#282e3d',
-                            },
-
-                            // 3. Números de los días (Más grandes y legibles)
-                            '& .MuiPickersDay-root': {
-                                fontSize: '0.9rem', // Antes era 0.85rem
-                                width: '35px',
-                                height: '35px',
-                                fontWeight: '500',
-                                // Efecto al seleccionar
-                                '&.Mui-selected': {
-                                    backgroundColor: '#0047ba !important',
+                            // --- RESPONSIVE 1220px ---
+                            '@media (max-width: 1220px)': {
+                                width: '240px',
+                                height: '295px',
+                                // Achicamos el contenedor general de los días
+                                '& .MuiDayCalendar-header, & .MuiDayCalendar-weekContainer': {
+                                    gap: '0px',
                                 }
                             },
 
-                            // 4. Ajustes de espaciado interno para que los 40px entren en los 300px
+                            // --- RESPONSIVE 600px ---
+                            '@media (max-width: 600px)': {
+                                width: '210px',
+                                height: '260px',
+                            },
+
+                            // 1. Nombre del MES y AÑO
+                            '& .MuiPickersCalendarHeader-label': {
+                                fontSize: '1rem',
+                                fontWeight: '700',
+                                color: '#0047ba',
+                                '@media (max-width: 1220px)': { fontSize: '0.9rem' }
+                            },
+
+                            // 2. Letras de los días: L, M, M, J...
+                            '& .MuiDayCalendar-weekDayLabel': {
+                                fontSize: '0.9rem',
+                                fontWeight: '600',
+                                width: '40px',
+                                color: '#282e3d',
+                                '@media (max-width: 1220px)': {
+                                    width: '32px',
+                                    fontSize: '0.8rem'
+                                },
+                                '@media (max-width: 600px)': {
+                                    width: '28px',
+                                    fontSize: '0.75rem'
+                                }
+                            },
+
+                            // 3. Números de los días
+                            '& .MuiPickersDay-root': {
+                                fontSize: '0.9rem',
+                                width: '35px',
+                                height: '35px',
+                                fontWeight: '500',
+                                '&.Mui-selected': {
+                                    backgroundColor: '#0047ba !important',
+                                },
+                                // Ajustes por resolución para los círculos de los días
+                                '@media (max-width: 1220px)': {
+                                    width: '30px',
+                                    height: '30px',
+                                    fontSize: '0.8rem'
+                                },
+                                '@media (max-width: 600px)': {
+                                    width: '26px',
+                                    height: '26px',
+                                    fontSize: '0.75rem'
+                                },
+                            },
+
+                            // 4. Contenedores internos (Forzamos que se adapten al nuevo ancho)
                             '& .MuiDayCalendar-monthContainer': {
                                 width: '100%',
                             },
@@ -103,21 +132,32 @@ const Calendar: React.FC<getAppointmentsAvailable> = ({ data, getAppointmentsAva
                                 margin: '2px 0',
                                 display: 'flex',
                                 justifyContent: 'center',
-                                // Reducimos el espacio entre días para que entren los números grandes
                                 gap: '2px',
+                                '@media (max-width: 1220px)': { gap: '1px' }
                             },
 
-                            // Centrado de la cabecera de días
                             '& .MuiDayCalendar-header': {
                                 display: 'flex',
                                 justifyContent: 'center',
                                 gap: '2px',
+                                '@media (max-width: 1220px)': { gap: '1px' }
                             },
 
-                            // Ajuste de las flechas de navegación
                             '& .MuiPickersCalendarHeader-root': {
                                 paddingLeft: '16px',
                                 paddingRight: '8px',
+                                '@media (max-width: 1220px)': {
+                                    maxHeight: '40px',
+                                    minHeight: '40px',
+                                    marginTop: '0px'
+                                }
+                            },
+
+                            // Achicamos las flechas de navegación en móvil
+                            '& .MuiPickersCalendarHeader-switchViewButton, & .MuiPickersArrowSwitcher-button': {
+                                '@media (max-width: 1220px)': {
+                                    padding: '4px'
+                                }
                             }
                         }}
                     />
@@ -130,7 +170,7 @@ const Calendar: React.FC<getAppointmentsAvailable> = ({ data, getAppointmentsAva
                     <p className='text-[#1e335f]'>Horarios disponibles: </p>
                     <div className='flex items-center justify-center gap-[10px] mt-[20px] rounded-[14px] w-full h-full flex-wrap '>
                         {data.length === 0 ? (
-                            <div className='bg-[#fff] w-fit text-[1.1rem] text-center p-[15px] rounded-[14px]'>No hay turnos disponibles para el dia seleccionado.</div>
+                            <div className='bg-[#fff] w-fit text-[1.1rem] text-center p-[15px] rounded-[14px] max-[600px]:text-[0.9rem]'>No hay turnos disponibles para el dia seleccionado.</div>
                         ) : (
                             data
                                 .slice()
@@ -140,7 +180,7 @@ const Calendar: React.FC<getAppointmentsAvailable> = ({ data, getAppointmentsAva
                                         <div
                                             key={appointment.id}
                                             onClick={() => setHourSelected(appointment.id)}
-                                            className={` text-[1rem] rounded-[14px] px-[16px] py-[8px] transition-all duration-[0.3s] cursor-pointer ${hourSelected === appointment.id ? "bg-[#0047ba] text-[#fff]" : "bg-[#fff] text-[#000]"}`}
+                                            className={` text-[1rem] rounded-[14px] px-[16px] max-[600px]:px-[12px] max-[600px]:py-[6px] max-[600px]:text-[0.9rem] py-[8px] transition-all duration-[0.3s] cursor-pointer ${hourSelected === appointment.id ? "bg-[#0047ba] text-[#fff]" : "bg-[#fff] text-[#000]"}`}
                                         >
                                             {appointment.date.substring(11, 16)}
                                         </div>
@@ -149,19 +189,19 @@ const Calendar: React.FC<getAppointmentsAvailable> = ({ data, getAppointmentsAva
                         )}
                     </div>
                     <button
-                    disabled={!hourSelected}
+                        disabled={!hourSelected}
                         onClick={() => {
                             setModalConfirm(true);
                             selectAppointment(hourSelected);
                         }}
-                        className={`mx-auto cursor-pointer ${!hourSelected ? "opacity-[0.6] cursor-not-allowed hover:none" : "cursor-pointer hover:opacity-[0.8]"} transition-all duration-300 mt-[15px] flex  items-center w-full justify-center bg-[#0047ba] text-[#fff] border-none rounded-[24px] text-[1.2rem] px-[24px] py-[10px]`}>
+                        className={`mx-auto cursor-pointer ${!hourSelected ? "opacity-[0.6] cursor-not-allowed hover:none" : "cursor-pointer hover:opacity-[0.8]"} transition-all duration-300 mt-[15px] flex max-[600px]:text-[1rem] items-center w-full justify-center bg-[#0047ba] text-[#fff] border-none rounded-[24px] text-[1.2rem] px-[24px] py-[10px]`}>
                         Agendar turno
                     </button>
                 </div>
 
             )}
             {modalConfirm && createPortal(
-                <ModalConfirmAppointment setModalConfirm={setModalConfirm} confirmAppointment={confirmAppointment} assignedAppointment={assignedAppointment} clearStatesOfAssignedAppointment={clearStatesOfAssignedAppointment}/>,
+                <ModalConfirmAppointment setModalConfirm={setModalConfirm} confirmAppointment={confirmAppointment} assignedAppointment={assignedAppointment} clearStatesOfAssignedAppointment={clearStatesOfAssignedAppointment} />,
                 document.body
             )}
         </div>

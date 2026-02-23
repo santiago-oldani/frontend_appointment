@@ -36,14 +36,14 @@ const AppointmentContainer: React.FC = () => {
             <NavBarAppointments />
 
             {/* Contenedor principal */}
-            <div className="flex flex-col items-center justify-center mt-[30px] w-[60%] max-[600px]:w-[70%] max-[600px]:mr-[70px]">
+            <div className="flex flex-col items-center justify-center mt-[30px] w-[60%] max-[600px]:w-[80%] ">
                 {/* Div de titulo y sidebar */}
-                <div className="flex flex-col items-start justify-start w-full h-auto">
+                <div className="flex flex-col items-start justify-start w-full h-auto max-[600px]:w-[70%] max-[600px]:items-center max-[600px]:justify-center">
                     {/* titulo */}
-                    <h2 className="font-bold text-[2rem] text-start text-[#202c3d] max-[440px]:text-[1.5rem] ">Gestiona tus turnos</h2>
+                    <h2 className="font-bold text-[2rem] text-start text-[#202c3d] max-[440px]:text-[1.5rem] max-[600px]:text-center">Gestiona tus turnos</h2>
                     {/* Sidebar center */}
 
-                    <div className="flex items-center w-[100%] max-[800px]:py-[15px] max-[800px]:items-start max-[800px]:flex-col px-[30px] justify-between bg-[#f0f0f3] rounded-[30px] shadow-[0_20px_50px_rgba(0,0,0,0.1)] mb-[70px] h-[70px]">
+                    <div className="flex items-center w-[100%] max-[800px]:py-[15px] max-[800px]:px-[20px] max-[800px]:items-start max-[800px]:flex-col px-[30px] justify-between bg-[#f0f0f3] rounded-[30px] shadow-[0_20px_50px_rgba(0,0,0,0.1)] mb-[70px] h-[70px]">
                         <div className="flex items-center justify-center max-[420px]:pb-[10px] gap-[12px]">
                             <IoPersonOutline size={25} className="flex-shrink-0 max-[800px]:w-[18px] max-[800px]:h-[18px]" />
                             <span className="capitalize max-[800px]:text-[12px]">{patient?.name.toLocaleLowerCase()} {patient?.lastname.toLocaleLowerCase()}</span>
@@ -72,7 +72,7 @@ const AppointmentContainer: React.FC = () => {
                     </div>
                 </div>
 
-                {window === "getAppointments" ? <div className='flex items-start justify-center gap-[50px]'>
+                {window === "getAppointments" ? <div className='flex max-[1030px]:flex-col max-[1030px]:w-full max-[1030px]:items-center items-start justify-center gap-[50px]'>
                     {arrayDivs.map((data, index) => {
                         return (
                             <AppointmentCards data={data} index={index} />
