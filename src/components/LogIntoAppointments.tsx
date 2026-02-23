@@ -7,7 +7,7 @@ import { IoMdArrowBack } from "react-icons/io";
 
 const LogIntoAppointments: React.FC = () => {
     const { states, actions } = useAppointmentContext();
-    const { patient } = states;
+    const { } = states;
     const { setPatient } = actions;
 
     const [formData, setFormData] = useState({
