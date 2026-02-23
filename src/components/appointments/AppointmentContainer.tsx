@@ -12,7 +12,7 @@ const AppointmentContainer: React.FC = () => {
     const { arrayDivs, patient, nextAppointmentsOfPatient } = states;
     const { getNextAppointments, cancelAppointment, setPatient } = actions;
     const [window, setWindow] = useState<string>("getAppointments");
-    const [patientInStorage, setPatientInStorage] = useState<Patient | undefined>(() => {
+    const [patientInStorage, _setPatientInStorage] = useState<Patient | undefined>(() => {
         const saved = localStorage.getItem('current_patient');
         return saved ? JSON.parse(saved) : undefined;
     });
