@@ -14,12 +14,6 @@ interface Sedes {
     subte: string;
 }
 
-// 2. Define la interfaz de las props que el componente espera
-interface SedesProps {
-    // Esperamos un array de objetos 'Sede'
-    sede: Sedes;
-}
-
 const sedesArray: Sedes[] = [
     {
         location: "Belgrano",
