@@ -20,7 +20,7 @@ export const useAppointments = () => {
 
     async function showSpecialties(): Promise<boolean> {
         try {
-            const response = await fetch("http://localhost:8081/api/specialties");
+            const response = await fetch("https://backendappointment-production-29f0.up.railway.app/api/specialties");
 
             if (!response.ok) {
                 throw new Error('Ha ocurrido un error en el servidor al obtener las especialidades');
@@ -46,7 +46,7 @@ export const useAppointments = () => {
         }
 
         try {
-            const response = await fetch(`http://localhost:8081/api/professionals/by-specialtyId?specialtyId=${specialtyId}`);
+            const response = await fetch(`https://backendappointment-production-29f0.up.railway.app/api/professionals/by-specialtyId?specialtyId=${specialtyId}`);
 
             if (!response.ok) {
                 throw new Error('Ha ocurrido un error obteniendo los profesionalidades de la especialidad seleccionada.')
@@ -100,7 +100,7 @@ export const useAppointments = () => {
         }
 
         try {
-            const response = await fetch(`http://localhost:8081/api/appointments/available?professionalId=${assignedAppointment?.professional?.id}&date=${formattedDate}`);
+            const response = await fetch(`https://backendappointment-production-29f0.up.railway.app/api/appointments/available?professionalId=${assignedAppointment?.professional?.id}&date=${formattedDate}`);
 
             if (!response.ok) throw new Error('Error en la respuesta del servidor');
 
@@ -169,7 +169,7 @@ export const useAppointments = () => {
         }
 
         try {
-            const response = await fetch(`http://localhost:8081/api/appointments/${appointmentId}/assign`, {
+            const response = await fetch(`https://backendappointment-production-29f0.up.railway.app/api/appointments/${appointmentId}/assign`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ id: patient?.id })
@@ -206,7 +206,7 @@ export const useAppointments = () => {
 
     const getNextAppointments = async (patientId: number) => {
         try {
-            const response = await fetch(`http://localhost:8081/api/appointments/reserved/${patientId}`);
+            const response = await fetch(`https://backendappointment-production-29f0.up.railway.app/api/appointments/reserved/${patientId}`);
             if (response.ok) {
                 const data: Appointment[] = await response.json();
 
@@ -222,7 +222,7 @@ export const useAppointments = () => {
     };
 
     function cancelAppointment(appointmentId: number, patientId: number): void {
-        fetch(`http://localhost:8081/api/appointments/cancel/${appointmentId}`, {
+        fetch(`https://backendappointment-production-29f0.up.railway.app/api/appointments/cancel/${appointmentId}`, {
             method: "PATCH"
         })
             .then((res) => {
