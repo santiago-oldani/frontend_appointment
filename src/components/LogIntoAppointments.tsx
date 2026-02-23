@@ -95,7 +95,7 @@ const LogIntoAppointments: React.FC = () => {
         if (!validate()) return;
 
         try {
-            const response = await fetch('http://localhost:8081/api/patient', {
+            const response = await fetch('https://backendappointment-production-29f0.up.railway.app/api/patient', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
