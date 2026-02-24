@@ -32,7 +32,7 @@ const AppointmentCards: React.FC<AppointmentCardsProps> = ({ data, index }) => {
     const cardHeight = getCardHeight();
 
     return (
-        <div className={`flex flex-col p-[20px] ${cardHeight} max-[600px]:border-[5px] ${data.state === 'blocked' && 'max-[600px]:h-[400px]'} ${data.state === 'selected' && 'max-[600px]:h-[380px]'} ${data.state === 'next' && data.title.toLocaleLowerCase() === "especialidad" && "max-[600px]:h-auto"} max-[1220px]:w-[250px] max-[600px]:w-[200px] items-start shadow-[0_20px_50px_rgba(0,0,0,0.1)] w-[315px] p-8 bg-[#eeeff1] rounded-[32px] shadow-2xl transition-all duration-500 border-[6px] ${borderColor}`}>
+        <div className={`flex flex-col p-[20px] ${cardHeight} max-[600px]:border-[5px] ${data.state === 'blocked' && 'max-[600px]:h-[400px]'} ${data.state === 'selected' && 'max-[600px]:h-[380px]'} ${data.state === 'next' && data.title.toLocaleLowerCase() === "especialidad" && "max-[600px]:h-auto"} max-[1220px]:w-[250px] max-[600px]:w-[240px] items-start shadow-[0_20px_50px_rgba(0,0,0,0.1)] w-[315px] p-8 bg-[#eeeff1] rounded-[32px] shadow-2xl transition-all duration-500 border-[6px] ${borderColor}`}>
             {/* Círculo con el número del paso */}
             <div className={`flex items-center justify-center w-[45px] h-[45px] max-[600px]:w-[30px] max-[600px]:h-[30px] flex-shrink-0 mb-6 rounded-full ${borderColor} max-[600px]:border-[4px] border-[8px] bg-transparent`}>
                 <span
