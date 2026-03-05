@@ -251,7 +251,7 @@ const LogIntoAppointments: React.FC = () => {
                     </h2>
 
                     <p className="text-[#d1d5db] max-w-[450px] text-[16px] leading-[1.5] max-[450px]:text-[14px]">
-                        Como el backend está en Render (plan gratuito), el servidor se "duerme" por inactividad. Puede demorar hasta <span className="text-[#ffffff] font-bold">1 a 2 minutos</span> en arrancar. ¡No cierres la pestaña!
+                        Como el backend está en Render (plan gratuito), el servidor se "duerme" por inactividad. Puede demorar entre <span className="text-[#ffffff] font-bold">1 a 2 minutos</span> en arrancar. ¡No cierres la pestaña!
                         <br />
                         ¡Gracias por tu paciencia!
                     </p>
