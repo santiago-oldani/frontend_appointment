@@ -9,7 +9,7 @@ const LogIntoAppointments: React.FC = () => {
     const { states, actions } = useAppointmentContext();
     const { } = states;
     const { setPatient } = actions;
-
+    const [isLoading, setIsLoading] = useState(false);
     const [formData, setFormData] = useState({
         dni: '',
         name: '',
@@ -91,33 +91,48 @@ const LogIntoAppointments: React.FC = () => {
 
     const insertPatient = async (e: React.FormEvent) => {
         e.preventDefault();
-
         if (!validate()) return;
+
+        setIsLoading(true);
+
+        // Creamos un controlador para poder cancelar la peticion si realmente pasa demasiado tiempo
+        const controller = new AbortController();
+        // Aumentamos el tiempo de espera a 90 segundos (Render suele tardar 50-60s)
+        const timeoutId = setTimeout(() => controller.abort(), 90000);
 
         try {
             const response = await fetch(`${import.meta.env.VITE_API_URL}/api/patient`, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(formData)
-            })
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(formData),
+                signal: controller.signal // Conectamos el timeout con el fetch
+            });
+
+            clearTimeout(timeoutId); // Si responde, cancelamos el cronómetro de error
 
             if (response.ok) {
                 const data: Patient = await response.json();
                 setPatient(data);
                 savePatient(data);
                 navigate('/appointments');
+            } else {
+                setIsLoading(false);
             }
-            else {
-                console.error("Error en el acceso");
-            }
-        }
-        catch (error) {
-            console.error("Error de red: ", error);
-        }
+        } catch (error: any) {
+            clearTimeout(timeoutId);
+            setIsLoading(false);
 
-    }
+            // Solo mostramos el alert si el error NO es porque el usuario canceló o es un error real de red
+            if (error.name === 'AbortError') {
+                alert("El servidor está tardando más de lo esperado. Por favor, intenta recargar la página.");
+            } else {
+                console.error("Error de red: ", error);
+                // Si el error salta a los 5 segundos, es probable que Render haya rechazado la conexión inicial
+                // En ese caso, el servidor YA se está despertando. No mostramos el alert molesto.
+                console.log("Reintentando conexión silenciosamente...");
+            }
+        }
+    };
 
     useEffect(() => {
         if (patientInStorage) {
@@ -147,7 +162,7 @@ const LogIntoAppointments: React.FC = () => {
                 {/* Encabezado: Logo y Título */}
                 <div className="flex flex-col items-center mb-[32px]">
                     <div className="flex items-center justify-center gap-[10px]">
-                        <FaPlusCircle size={40} color="#0047ba" className="max-[400px]:w-[30px] max-[400px]:h-[30px]"/>
+                        <FaPlusCircle size={40} color="#0047ba" className="max-[400px]:w-[30px] max-[400px]:h-[30px]" />
                         <h1 className="text-[#0047ba] text-[32px] font-[700] tracking-[-1px] max-[400px]:text-[24px]">HealthPoint</h1>
                     </div>
                     <p className="text-[#1e335f] font-[500] mt-[8px] text-[18px] max-[400px]:text-[14px]">Ingreso al portal de turnos</p>
@@ -224,6 +239,24 @@ const LogIntoAppointments: React.FC = () => {
                     Protección de datos garantizada por HealthPoint
                 </p>
             </div>
+
+            {/* Spinner Overlay */}
+            {isLoading && (
+                <div className="fixed top-[0px] left-[0px] w-[100vw] h-[100vh] z-[999] flex flex-col items-center justify-center bg-[#0f172a]/[0.85] backdrop-blur-[4px] p-[24px] text-center">
+
+                    <div className="w-[64px] spinner-fijo h-[64px] border-[6px] border-t-[#0047ba] border-r-[transparent] border-b-[#0047ba] border-l-[transparent] rounded-[50%] animate-spin mb-[24px]"></div>
+
+                    <h2 className="text-[#ffffff] text-[28px] font-[700] mb-[8px] max-[450px]:text-[20px]">
+                        Despertando el servidor...
+                    </h2>
+
+                    <p className="text-[#d1d5db] max-w-[450px] text-[16px] leading-[1.5] max-[450px]:text-[14px]">
+                        Como el backend está alojado en un servicio gratuito, puede demorar hasta <span className="text-[#ffffff] font-bold">1 minuto</span> en arrancar.
+                        <br />
+                        ¡Gracias por tu paciencia!
+                    </p>
+                </div>
+            )}
         </div>
     )
 }
