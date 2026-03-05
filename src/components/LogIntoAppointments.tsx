@@ -95,20 +95,19 @@ const LogIntoAppointments: React.FC = () => {
 
         setIsLoading(true);
 
-        // Creamos un controlador para poder cancelar la peticion si realmente pasa demasiado tiempo
         const controller = new AbortController();
-        // Aumentamos el tiempo de espera a 90 segundos (Render suele tardar 50-60s)
-        const timeoutId = setTimeout(() => controller.abort(), 90000);
+        // 3 minutos de tiempo límite (180.000 ms) para estar súper seguros
+        const timeoutId = setTimeout(() => controller.abort(), 180000);
 
         try {
             const response = await fetch(`${import.meta.env.VITE_API_URL}/api/patient`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(formData),
-                signal: controller.signal // Conectamos el timeout con el fetch
+                signal: controller.signal
             });
 
-            clearTimeout(timeoutId); // Si responde, cancelamos el cronómetro de error
+            clearTimeout(timeoutId);
 
             if (response.ok) {
                 const data: Patient = await response.json();
@@ -117,19 +116,20 @@ const LogIntoAppointments: React.FC = () => {
                 navigate('/appointments');
             } else {
                 setIsLoading(false);
+                // Si el backend responde pero con error, podrías mostrar un mensaje sutil
             }
         } catch (error: any) {
             clearTimeout(timeoutId);
-            setIsLoading(false);
+            // NO ponemos alert acá para que no interrumpa la experiencia
+            console.error("Error detectado:", error);
 
-            // Solo mostramos el alert si el error NO es porque el usuario canceló o es un error real de red
             if (error.name === 'AbortError') {
-                alert("El servidor está tardando más de lo esperado. Por favor, intenta recargar la página.");
+                setIsLoading(false);
+                alert("El servidor está tardando más de lo común. Por favor, intenta de nuevo en un momento.");
             } else {
-                console.error("Error de red: ", error);
-                // Si el error salta a los 5 segundos, es probable que Render haya rechazado la conexión inicial
-                // En ese caso, el servidor YA se está despertando. No mostramos el alert molesto.
-                console.log("Reintentando conexión silenciosamente...");
+                // Si es un error de red inicial, el servidor ya se está despertando.
+                // Dejamos el spinner un poco más o intentamos de nuevo silenciosamente.
+                console.log("Servidor en proceso de despertar...");
             }
         }
     };
@@ -251,7 +251,7 @@ const LogIntoAppointments: React.FC = () => {
                     </h2>
 
                     <p className="text-[#d1d5db] max-w-[450px] text-[16px] leading-[1.5] max-[450px]:text-[14px]">
-                        Como el backend está alojado en un servicio gratuito, puede demorar hasta <span className="text-[#ffffff] font-bold">1 minuto</span> en arrancar.
+                        Como el backend está en Render (plan gratuito), el servidor se "duerme" por inactividad. Puede demorar hasta <span className="text-[#ffffff] font-bold">1 a 2 minutos</span> en arrancar. ¡No cierres la pestaña!
                         <br />
                         ¡Gracias por tu paciencia!
                     </p>
